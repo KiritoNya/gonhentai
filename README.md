@@ -1,2 +1,2 @@
 # nhentai
-Unofficial Nhentai API written in golang
+Unofficial Nhentai API written in golang [WIP]
