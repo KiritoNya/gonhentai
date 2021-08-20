@@ -7,9 +7,7 @@ import (
 )
 
 //validateDoujinUrl is a function that checks if the url of doujinshi is valid.
-func validateDoujinUrl(fl validator.FieldLevel) bool {
-	doujinUrl := fl.Field().String()
-
+func validateDoujinUrl(doujinUrl string) bool {
 	// Check if it's a valid url
 	match, _ := regexp.MatchString(
 		`^https:\/\/(www.)?nhentai\.net\/g\/[0-9]{1,6}[\/]?$`,
@@ -20,8 +18,7 @@ func validateDoujinUrl(fl validator.FieldLevel) bool {
 }
 
 //validateNhentaiId is a function that checks if the id of doujinshi is valid.
-func validateNhentaiId(fl validator.FieldLevel) bool {
-	doujinId := fl.Field().Int()
+func validateNhentaiId(doujinId int) bool {
 	doujinIdString := fmt.Sprintf("%d", doujinId)
 
 	// Check if it's a valid nhentai id
