@@ -2,6 +2,7 @@ package nhentai
 
 import (
 	"bytes"
+	"errors"
 	"text/template"
 )
 
@@ -18,4 +19,18 @@ func templateSolver(tmpl string, values interface{}) (string, error) {
 	}
 
 	return buf.String(), nil
+}
+
+// j => jpg, p => png, g => gif
+func normalizeExt(ext string) (string, error) {
+	switch ext {
+	case "j":
+		return "jpg", nil
+	case "p":
+		return "png", nil
+	case "g":
+		return "gif", nil
+	default:
+		return "", errors.New("Image type not found")
+	}
 }

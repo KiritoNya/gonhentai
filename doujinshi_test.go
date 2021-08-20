@@ -1,7 +1,9 @@
 package nhentai_test
 
 import (
+	"encoding/json"
 	"github.com/KiritoNya/nhentai"
+	"os"
 	"strconv"
 	"testing"
 )
@@ -29,4 +31,20 @@ func TestNewDoujinshiUrl(t *testing.T) {
 
 	t.Log("Doujinshi: ", doujin)
 	t.Log("NewDoujinshiUrl [OK]")
+}
+
+func TestDoujinshi_UnmarshalJSON(t *testing.T) {
+	var d nhentai.Doujinshi
+
+	content, err := os.ReadFile("./tests/doujinshi.test.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = json.Unmarshal(content, &d)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log("DoujinshiUnmarshalJSON: [OK]")
 }
