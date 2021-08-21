@@ -3,7 +3,6 @@ package nhentai
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"path/filepath"
 	"strconv"
@@ -11,54 +10,32 @@ import (
 )
 
 type Doujinshi struct {
-	id           int
-	url          string
-	mediaId      int
-	title        *Title
-	coverImage   *Image
-	thumbnail    *Image
-	pages        []*Page
-	scanlator    string
-	uploadDate   time.Time
-	parodies     []*Parody
-	characters   []*Character
-	tags         []*Tag
-	artists      []*Artist
-	groups       []*Group
-	languages    []*Language
-	categories   []*Category
-	numPages     int
-	numFavorites int
-	related      []*Doujinshi
-	comments     []*Comment
-	raw          []byte
+	Id           int
+	Url          string
+	MediaId      int
+	Title        *Title
+	CoverImage   *Image
+	Thumbnail    *Image
+	Pages        []*Page
+	Scanlator    string
+	UploadDate   time.Time
+	Parodies     []*Parody
+	Characters   []*Character
+	Tags         []*Tag
+	Artists      []*Artist
+	Groups       []*Group
+	Languages    []*Language
+	Categories   []*Category
+	NumPages     int
+	NumFavorites int
+	Related      []*Doujinshi
+	Comments     []*Comment
 }
 
 type Title struct {
-	english  string
-	japanese string
-	pretty   string
-}
-
-func (t *Title) UnmarshalJSON(b []byte) error {
-	var title map[string]json.RawMessage
-
-	err := json.Unmarshal(title["english"], &t.english)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(title["japanese"], &t.japanese)
-	if err != nil {
-		return err
-	}
-
-	err = json.Unmarshal(title["pretty"], &t.pretty)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	English  string
+	Japanese string
+	Pretty   string
 }
 
 // NewDoujinshiId is a constructor of the doujinshi object
@@ -91,9 +68,11 @@ func NewDoujinshiId(id int) (*Doujinshi, error) {
 	}
 
 	// Prepare doujin info
-	d.id = id
-	d.url = DoujinPrefix + strconv.Itoa(id)
-	d.raw = content
+	err = json.Unmarshal(content, &d)
+	if err != nil {
+		return nil, err
+	}
+	d.Url = DoujinPrefix + strconv.Itoa(id)
 
 	return &d, nil
 }
@@ -127,27 +106,8 @@ func NewDoujinshiUrl(url string) (*Doujinshi, error) {
 	return doujin, nil
 }
 
-// Id is a function that return the id of doujinshi
-func (d *Doujinshi) Id() int {
-	return d.id
-}
-
-// Url is a function that return the url of doujinshi
-func (d *Doujinshi) Url() string {
-	return d.url
-}
-
-// MediaId is a function that return the mediaId of doujinshi
-func (d *Doujinshi) MediaId() int {
-	return d.mediaId
-}
-
-func (d *Doujinshi) allInfo() error {
-	return nil
-}
-
 func (d *Doujinshi) UnmarshalJSON(b []byte) error {
-	var rawDoujin map[string]interface{}
+	var rawDoujin map[string]json.RawMessage
 
 	// Unmarshal
 	err := json.Unmarshal(b, &rawDoujin)
@@ -155,138 +115,156 @@ func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	// Parse doujin title section
-	var t Title
-	titleMap := rawDoujin["title"].(map[string]interface{})
-	t.english = titleMap["english"].(string)
-	t.japanese = titleMap["japanese"].(string)
-	t.pretty = titleMap["pretty"].(string)
-	d.title = &t
+	// Parse title
+	err = json.Unmarshal(rawDoujin["title"], &d.Title)
+	if err != nil {
+		return err
+	}
 
-	// Parse doujin image section
-	imagesMap := rawDoujin["images"].(map[string]interface{})
-	pagesArray := imagesMap["pages"].([]interface{})
-	coverImage := imagesMap["cover"].(map[string]interface{})
-	thumbImage := imagesMap["thumbnail"].(map[string]interface{})
+	// Parse images
+	var imagesRaw map[string]json.RawMessage
+	err = json.Unmarshal(rawDoujin["images"], &imagesRaw)
+	if err != nil {
+		return err
+	}
 
-	// Parse pages section
-	for numPage, page := range pagesArray {
+	// Parse pages
+	var pageImagesRaw []json.RawMessage
+	err = json.Unmarshal(imagesRaw["pages"], &pageImagesRaw)
+	if err != nil {
+		return err
+	}
+
+	for numPage, image := range pageImagesRaw {
 		var i Image
 		var p Page
+		var err error
 
-		pageMap := page.(map[string]interface{})
-
-		// Get image info
-		i.ext, err = normalizeExt(pageMap["t"].(string))
+		err = json.Unmarshal(image, &i)
 		if err != nil {
 			return err
 		}
 
-		i.heigth = int(pageMap["h"].(float64))
-		i.width = int(pageMap["w"].(float64))
+		// Normalize image type
+		i.Ext, err = normalizeExt(i.Ext)
+		if err != nil {
+			return err
+		}
 
-		// Assign image at page
-		p.image = &i
+		p.Image = &i
+		p.Number = numPage
 
-		// Set page number
-		p.number = numPage
-
-		// Append page to pages
-		d.pages = append(d.pages, &p)
+		// Append
+		d.Pages = append(d.Pages, &p)
 	}
 
-	// Parse cover section
-	var cover Image
-	cover.ext, err = normalizeExt(coverImage["t"].(string))
+	// Parse cover image
+	var coverImage Image
+	err = json.Unmarshal(imagesRaw["cover"], &coverImage)
 	if err != nil {
 		return err
 	}
-	cover.width = int(coverImage["w"].(float64))
-	cover.heigth = int(coverImage["h"].(float64))
-	d.coverImage = &cover
+	d.CoverImage = &coverImage
 
-	// Parse thumbnail section
+	// Parse thumbnail
 	var thumbnail Image
-	thumbnail.ext, err = normalizeExt(thumbImage["t"].(string))
+	err = json.Unmarshal(imagesRaw["thumbnail"], &thumbnail)
 	if err != nil {
 		return err
 	}
-	thumbnail.width = int(thumbImage["w"].(float64))
-	thumbnail.heigth = int(thumbImage["h"].(float64))
-	d.thumbnail = &thumbnail
+	d.Thumbnail = &thumbnail
 
 	// Parse tags
-	tagsMap := rawDoujin["tags"].([]interface{})
-	for _, tag := range tagsMap {
+	var tagsRaw []json.RawMessage
+	err = json.Unmarshal(rawDoujin["tags"], &tagsRaw)
+	if err != nil {
+		return err
+	}
 
-		var tg Tag
-		tagMap := tag.(map[string]interface{})
+	for _, tagRaw := range tagsRaw {
+		var tagMap map[string]interface{}
+		var tag Tag
+		var err error
 
-		tg.id = int(tagMap["id"].(float64))
-		tg.name = tagMap["name"].(string)
-		tg.url = BaseUrl + tagMap["url"].(string)
-		tg.count = int(tagMap["count"].(float64))
+		err = json.Unmarshal(tagRaw, &tagMap)
+		if err != nil {
+			return err
+		}
 
-		tagType := tagMap["type"].(string)
-		switch tagType {
+		tag.id = int(tagMap["id"].(float64))
+		tag.name = tagMap["name"].(string)
+		tag.count = int(tagMap["count"].(float64))
+		tag.url = tagMap["url"].(string)
+
+		// Filter by tag type
+		switch tagMap["type"].(string) {
 		case "parody":
-			tagParody := Parody(tg)
-			d.parodies = append(d.parodies, &tagParody)
+			tagParody := Parody(tag)
+			d.Parodies = append(d.Parodies, &tagParody)
 		case "character":
-			tagCharacter := Character(tg)
-			d.characters = append(d.characters, &tagCharacter)
+			tagCharacter := Character(tag)
+			d.Characters = append(d.Characters, &tagCharacter)
 		case "tag":
-			d.tags = append(d.tags, &tg)
+			d.Tags = append(d.Tags, &tag)
 		case "artist":
-			tagArtist := Artist(tg)
-			d.artists = append(d.artists, &tagArtist)
+			tagArtist := Artist(tag)
+			d.Artists = append(d.Artists, &tagArtist)
 		case "group":
-			tagGroup := Group(tg)
-			d.groups = append(d.groups, &tagGroup)
+			tagGroup := Group(tag)
+			d.Groups = append(d.Groups, &tagGroup)
 		case "language":
-			tagLanguage := Language(tg)
-			d.languages = append(d.languages, &tagLanguage)
+			tagLanguage := Language(tag)
+			d.Languages = append(d.Languages, &tagLanguage)
 		case "category":
-			tagCategory := Category(tg)
-			d.categories = append(d.categories, &tagCategory)
+			tagCategory := Category(tag)
+			d.Categories = append(d.Categories, &tagCategory)
 		default:
 			return errors.New("Tag type not found")
 		}
 	}
 
-	// Parse base doujin info
-	mediaId, err := strconv.Atoi(rawDoujin["media_id"].(string))
+	// Parse id
+	err = json.Unmarshal(rawDoujin["id"], &d.Id)
 	if err != nil {
 		return err
 	}
 
-	d.id = int(rawDoujin["id"].(float64))
-	d.mediaId = mediaId
-	d.title = &t
-	d.scanlator = rawDoujin["scanlator"].(string)
-	d.uploadDate = time.Unix(int64(rawDoujin["upload_date"].(float64)), 0)
-	d.numPages = int(rawDoujin["num_pages"].(float64))
-	d.numFavorites = int(rawDoujin["num_favorites"].(float64))
-
-	data, err := json.Marshal(&d)
+	// Parse media id
+	var mediaIdString string
+	err = json.Unmarshal(rawDoujin["media_id"], &mediaIdString)
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(data))
+	d.MediaId, err = strconv.Atoi(mediaIdString)
+	if err != nil {
+		return err
+	}
+
+	// Parse scanlator
+	err = json.Unmarshal(rawDoujin["scanlator"], &d.Scanlator)
+	if err != nil {
+		return err
+	}
+
+	// Parse upload date
+	var uploadUnixDate int64
+	err = json.Unmarshal(rawDoujin["upload_date"], &uploadUnixDate)
+	if err != nil {
+		return err
+	}
+	d.UploadDate = time.Unix(uploadUnixDate, 0)
+
+	// Parse number of pages
+	err = json.Unmarshal(rawDoujin["num_pages"], &d.NumPages)
+	if err != nil {
+		return err
+	}
+
+	// Parse number of favorites
+	err = json.Unmarshal(rawDoujin["num_favorites"], &d.NumFavorites)
+	if err != nil {
+		return err
+	}
 
 	return nil
-}
-
-func (d *Doujinshi) MarshalJSON() error {
-	/*j, err := json.Marshal(struct {
-		Uuid string
-		Name string
-	}{
-		Uuid: m.uuid,
-		Name: m.Name,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return j, nil*/
 }
