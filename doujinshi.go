@@ -106,6 +106,7 @@ func NewDoujinshiUrl(url string) (*Doujinshi, error) {
 	return doujin, nil
 }
 
+// UnmarshalJSON is a json parser of doujinshi object
 func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 	var rawDoujin map[string]json.RawMessage
 
