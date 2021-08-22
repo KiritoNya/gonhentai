@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-//validateDoujinUrl is a function that checks if the url of doujinshi is valid.
+// validateDoujinUrl is a function that checks if the url of doujinshi is valid.
 func validateDoujinUrl(doujinUrl string) bool {
 	// Check if it's a valid url
 	match, _ := regexp.MatchString(
@@ -17,7 +17,7 @@ func validateDoujinUrl(doujinUrl string) bool {
 	return match
 }
 
-//validateNhentaiId is a function that checks if the id of doujinshi is valid.
+// validateNhentaiId is a function that checks if the id of doujinshi is valid.
 func validateNhentaiId(doujinId int) bool {
 	doujinIdString := fmt.Sprintf("%d", doujinId)
 
@@ -27,19 +27,18 @@ func validateNhentaiId(doujinId int) bool {
 	return ok
 }
 
-//validateNhentaiImageUrl is a function that checks if the url of image is valid.
-func validateNhentaiImageUrl(fl validator.FieldLevel) bool {
-	nhentaiImageUrl := fl.Field().String()
+// validateNhentaiImageUrl is a function that checks if the url of image is valid.
+func validateNhentaiImageUrl(url string) bool {
 
 	ok, _ := regexp.MatchString(
 		`^https:\/\/(t|i)\.nhentai\.net\/(galleries|avatars)\/[0-9]+\/?.+\.(png|jpg|gif)?.+$`,
-		nhentaiImageUrl,
+		url,
 	)
 
 	return ok
 }
 
-//validateNhentaiImageUrl is a function that checks if the url of doujinshi page is valid.
+// validateNhentaiImageUrl is a function that checks if the url of doujinshi page is valid.
 func validateDoujinPageUrl(fl validator.FieldLevel) bool {
 	doujinPageUrl := fl.Field().String()
 
@@ -51,7 +50,7 @@ func validateDoujinPageUrl(fl validator.FieldLevel) bool {
 	return ok
 }
 
-//validateNhentaiImageUrl is a function that checks if the url of comment is valid.
+// validateNhentaiImageUrl is a function that checks if the url of comment is valid.
 func validateCommentUrl(fl validator.FieldLevel) bool {
 	commentUrl := fl.Field().String()
 
@@ -63,7 +62,7 @@ func validateCommentUrl(fl validator.FieldLevel) bool {
 	return ok
 }
 
-//validateNhentaiImageUrl is a function that checks if the url of user is valid.
+// validateNhentaiImageUrl is a function that checks if the url of user is valid.
 func validateUserUrl(fl validator.FieldLevel) bool {
 	userUrl := fl.Field().String()
 
@@ -73,4 +72,12 @@ func validateUserUrl(fl validator.FieldLevel) bool {
 	)
 
 	return ok
+}
+
+// validateImageType is a function that checks if the image type is valid
+func validateImageType(ext string) bool {
+	if (ext != "jpg") && (ext != "png") && (ext != "gif") {
+		return false
+	}
+	return true
 }

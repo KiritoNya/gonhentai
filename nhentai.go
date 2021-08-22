@@ -10,15 +10,23 @@ const (
 	// BaseUrl is the url base of site
 	BaseUrl string = "https://nhentai.net"
 
-	// DoujinPrefix is the prefix that comes before the id in the doujinshi url
-	DoujinPrefix string = "https://nhentai.net/g/"
+	// DoujinBaseUrl is the prefix that comes before the id in the doujinshi url
+	DoujinBaseUrl string = "https://nhentai.net/g/"
+
+	// ImageBaseUrl is base url for the image link
+	ImageBaseUrl string = "https://i.nhentai.net"
+
+	// ThumbnailBaseUrl is the base url for the thumbnail link
+	ThumbnailBaseUrl string = "https://t.nhentai.net"
 
 	// BaseUrlApi is the url base api of the site
 	baseUrlApi string = "https://nhentai.net/api"
 
-	// gallery/${doujinId}
 	// galleryApi is the endpoint for get the doujinshi info
 	galleryApi string = "/gallery/{{.id}}"
+
+	// imageCompleteUrl is the url for get the  thumbnail image or page image
+	imageCompleteUrl string = "{{.baseImageUrl}}/galleries/{{.id}}/{{.numPage}}.{{.ext}}"
 
 	// galleries/search?query=${query}&page=${page}&sort=${sort}
 	// searchApi is the endpoint for get the result of research
@@ -44,7 +52,6 @@ var validate *validator.Validate
 
 func init() {
 	validate = validator.New()
-	validate.RegisterValidation("nhentai_img_url", validateNhentaiImageUrl)
 	validate.RegisterValidation("doujin_page_url", validateDoujinPageUrl)
 	validate.RegisterValidation("comment_url", validateCommentUrl)
 	validate.RegisterValidation("user_url", validateUserUrl)

@@ -14,8 +14,8 @@ type Doujinshi struct {
 	Url          string
 	MediaId      int
 	Title        *Title
-	CoverImage   *Image
-	Thumbnail    *Image
+	CoverImage   *Cover
+	Thumbnail    *Thumbnail
 	Pages        []*Page
 	Scanlator    string
 	UploadDate   time.Time
@@ -72,7 +72,7 @@ func NewDoujinshiId(id int) (*Doujinshi, error) {
 	if err != nil {
 		return nil, err
 	}
-	d.Url = DoujinPrefix + strconv.Itoa(id)
+	d.Url = DoujinBaseUrl + strconv.Itoa(id)
 
 	return &d, nil
 }
@@ -136,43 +136,41 @@ func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	for numPage, image := range pageImagesRaw {
-		var i Image
+	for _, img := range pageImagesRaw {
 		var p Page
 		var err error
 
-		err = json.Unmarshal(image, &i)
+		err = json.Unmarshal(img, &p)
 		if err != nil {
 			return err
 		}
 
 		// Normalize image type
-		i.Ext, err = normalizeExt(i.Ext)
+		p.Ext, err = normalizeExt(p.Ext)
 		if err != nil {
 			return err
 		}
-
-		p.Image = &i
-		p.Number = numPage
 
 		// Append
 		d.Pages = append(d.Pages, &p)
 	}
 
 	// Parse cover image
-	var coverImage Image
+	var coverImage Cover
 	err = json.Unmarshal(imagesRaw["cover"], &coverImage)
 	if err != nil {
 		return err
 	}
+	//cover := Cover(coverImage)
 	d.CoverImage = &coverImage
 
 	// Parse thumbnail
-	var thumbnail Image
+	var thumbnail Thumbnail
 	err = json.Unmarshal(imagesRaw["thumbnail"], &thumbnail)
 	if err != nil {
 		return err
 	}
+	//thumbnailObj := Thumbnail(thumbnail)
 	d.Thumbnail = &thumbnail
 
 	// Parse tags

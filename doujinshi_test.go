@@ -8,8 +8,6 @@ import (
 	"testing"
 )
 
-const dojinshiId int = 354862
-
 func TestNewDoujinshiId(t *testing.T) {
 	doujin, err := nhentai.NewDoujinshiId(dojinshiId)
 	if err != nil {
@@ -22,7 +20,7 @@ func TestNewDoujinshiId(t *testing.T) {
 
 func TestNewDoujinshiUrl(t *testing.T) {
 
-	doujinUrl := nhentai.DoujinPrefix + strconv.Itoa(dojinshiId)
+	doujinUrl := nhentai.DoujinBaseUrl + strconv.Itoa(dojinshiId)
 
 	doujin, err := nhentai.NewDoujinshiUrl(doujinUrl)
 	if err != nil {
@@ -46,5 +44,6 @@ func TestDoujinshi_UnmarshalJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	t.Log("Doujinshi: ", d)
 	t.Log("DoujinshiUnmarshalJSON: [OK]")
 }

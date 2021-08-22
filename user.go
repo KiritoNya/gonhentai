@@ -6,7 +6,7 @@ type User struct {
 	id           int `validate:"min=0"`
 	username     string
 	url          string
-	profileImage *Image
+	profileImage *Avatar
 	isSuperUser  bool
 	isStaff      bool
 	raw          string `validate:"json"`
