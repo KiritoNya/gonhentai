@@ -37,10 +37,7 @@ const (
 	searchTagIdApi string = "/galleries/tagged?{{ $count := 0 }}{{ if .id }}tag_id={{.id}}{{$count := add $count 1}}{{end}}{{if .page}}{{if $count gt 0}}&{{end}}page={{.page}}{{$count := add $count 1}}{{end}}{{if .sort}}{{if $count gt 0}}&{{end}}sort={{.sort}}{{end}}"
 
 	// searchRelatedApi is the endpoint for get the related doujinshi
-	searchRelatedApi string = "/gallery/{.id}/related"
-
-	// imageApi is the endpoint for get image
-	imageApi string = "${baseURLImage}/galleries/${doujin.mediaId}/${pageNumber}.${extension}"
+	searchRelatedApi string = "/gallery/{{.id}}/related"
 
 	// commentsApi is the endpoint for get the comments linked to a doujinshi
 	comments string = "/gallery/${galleryId}/comments"

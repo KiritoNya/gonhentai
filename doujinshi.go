@@ -28,7 +28,7 @@ type Doujinshi struct {
 	Categories   []*Category
 	NumPages     int
 	NumFavorites int
-	Related      []*Doujinshi
+	Related      []Doujinshi
 	Comments     []*Comment
 }
 
@@ -104,6 +104,55 @@ func NewDoujinshiUrl(url string) (*Doujinshi, error) {
 	}
 
 	return doujin, nil
+}
+
+// GetRelated is a funciton that gets the related doujinshi and assign them to the doujinshi object
+func (d *Doujinshi) GetRelated() error {
+
+	type RespJson struct {
+		Result []Doujinshi
+	}
+	var rj RespJson
+
+	// Check doujinshi id
+	if d.Id == 0 {
+		return errors.New("Id of doujinshi not setted")
+	}
+
+	// Make url
+	tmpl, err := templateSolver(
+		searchRelatedApi,
+		map[string]interface{}{
+			"id": d.Id,
+		},
+	)
+
+	// Check template error
+	if err != nil {
+		return err
+	}
+
+	// Do request
+	resp, err := ClientHttp.Get(baseUrlApi + "/" + tmpl)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	content, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	// Parse json response body
+	err = json.Unmarshal(content, &rj)
+	if err != nil {
+		return err
+	}
+
+	// Assign related doujinshi to doujinshi object
+	d.Related = rj.Result
+	return nil
 }
 
 // UnmarshalJSON is a json parser of doujinshi object
@@ -225,7 +274,23 @@ func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 	// Parse id
 	err = json.Unmarshal(rawDoujin["id"], &d.Id)
 	if err != nil {
-		return err
+
+		// Check if id is a string
+		var idString string
+		err2 := json.Unmarshal(rawDoujin["id"], &idString)
+		if err2 != nil {
+			// It isn't a string, it's a real error
+			return err2
+		}
+
+		// Convert string to int
+		idInt, err := strconv.Atoi(idString)
+		if err2 != nil {
+			return err
+		}
+
+		// Assign id to id field
+		d.Id = idInt
 	}
 
 	// Parse media id
