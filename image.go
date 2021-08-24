@@ -204,7 +204,7 @@ func (i *image) urlService(mediaId int, pageNum string, imgType imageType) error
 	// Create url of image with template
 	url, err := templateSolver(imageCompleteUrl, map[string]interface{}{
 		"baseImageUrl": baseUrl,
-		"id":           mediaId,
+		"mediaId":      mediaId,
 		"numPage":      pageNum,
 		"ext":          i.Ext,
 	})

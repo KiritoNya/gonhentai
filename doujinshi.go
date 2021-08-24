@@ -4,11 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"io/ioutil"
 	"path/filepath"
 	"strconv"
 	"time"
 )
 
+// Doujinshi is the data struct that describes a manga or a doujinshi
 type Doujinshi struct {
 	Id           int
 	Url          string
@@ -32,6 +34,7 @@ type Doujinshi struct {
 	Comments     []*Comment
 }
 
+// Title is the data struct that describes the doujinshi title
 type Title struct {
 	English  string
 	Japanese string
@@ -152,6 +155,45 @@ func (d *Doujinshi) GetRelated() error {
 
 	// Assign related doujinshi to doujinshi object
 	d.Related = rj.Result
+	return nil
+}
+
+// GetComments is a function that gets the related comments of doujinshi and assign them to the doujinshi object
+func (d *Doujinshi) GetComments() error {
+
+	var c []*Comment
+
+	// Check id of doujinshi object
+	if d.Id == 0 {
+		return errors.New("Id not setted")
+	}
+
+	// Make url
+	tmpl, err := templateSolver(commentsApi, map[string]interface{}{"id": d.Id})
+	if err != nil {
+		return err
+	}
+
+	// Do request
+	res, err := ClientHttp.Get(baseUrlApi + tmpl)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	// Read response body
+	content, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	// Parse json response body
+	err = json.Unmarshal(content, &c)
+	if err != nil {
+		return err
+	}
+
+	d.Comments = c
 	return nil
 }
 

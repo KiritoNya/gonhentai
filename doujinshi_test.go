@@ -49,6 +49,23 @@ func TestDoujinshi_GetRelated(t *testing.T) {
 	t.Log("Doujinshi_GetRelated [OK]")
 }
 
+func TestDoujinshi_GetComments(t *testing.T) {
+	// Make doujinshi object
+	d, err := nhentai.NewDoujinshiId(dojinshiId)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Get related doujinshi comments
+	err = d.GetComments()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log("Comments:", d.Comments)
+	t.Log("Doujinshi_GetComments [OK]")
+}
+
 func TestDoujinshi_UnmarshalJSON(t *testing.T) {
 	var d nhentai.Doujinshi
 

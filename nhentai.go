@@ -26,7 +26,7 @@ const (
 	galleryApi string = "/gallery/{{.id}}"
 
 	// imageCompleteUrl is the url for get the  thumbnail image or page image
-	imageCompleteUrl string = "{{.baseImageUrl}}/galleries/{{.id}}/{{.numPage}}.{{.ext}}"
+	imageCompleteUrl string = "{{.baseImageUrl}}/galleries/{{.mediaId}}/{{.numPage}}.{{.ext}}"
 
 	// galleries/search?query=${query}&page=${page}&sort=${sort}
 	// searchApi is the endpoint for get the result of research
@@ -40,7 +40,7 @@ const (
 	searchRelatedApi string = "/gallery/{{.id}}/related"
 
 	// commentsApi is the endpoint for get the comments linked to a doujinshi
-	comments string = "/gallery/${galleryId}/comments"
+	commentsApi string = "/gallery/{{.id}}/comments"
 )
 
 // ClientHttp is the client used for http requests. The default value is http.DefaultClient.
