@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strconv"
 	"time"
@@ -30,7 +31,7 @@ type Doujinshi struct {
 	Categories   []*Category
 	NumPages     int
 	NumFavorites int
-	Related      []Doujinshi
+	Related      []*Doujinshi
 	Comments     []*Comment
 }
 
@@ -39,6 +40,12 @@ type Title struct {
 	English  string
 	Japanese string
 	Pretty   string
+}
+
+type DownloadOption struct {
+	All     bool
+	MinPage int
+	MaxPage int
 }
 
 // NewDoujinshiId is a constructor of the doujinshi object
@@ -113,7 +120,7 @@ func NewDoujinshiUrl(url string) (*Doujinshi, error) {
 func (d *Doujinshi) GetRelated() error {
 
 	type RespJson struct {
-		Result []Doujinshi
+		Result []*Doujinshi
 	}
 	var rj RespJson
 
@@ -194,6 +201,71 @@ func (d *Doujinshi) GetComments() error {
 	}
 
 	d.Comments = c
+	return nil
+}
+
+// Save is a function that download all pages of doujinshi in the specified directory. The name of image can be described by template.
+func (d *Doujinshi) Save(dirPath string, perm os.FileMode, pageNameTmpl string) error {
+
+	// Check template
+	if !validateImageNameTemplate(pageNameTmpl) {
+		return errors.New("\nInvalid template. The template must contain at least the fields '{{.pageNum}}' or '{{.ext}}'")
+	}
+
+	// Check if pages is setted
+	if d.Pages == nil {
+		return errors.New("Doujinshi pages not setted")
+	}
+
+	// Check if numPages is setted
+	if d.NumPages == 0 {
+		return errors.New("Pages number not setted")
+	}
+
+	// Foreach pages
+	for pageNum, pag := range d.Pages {
+
+		// Check if the extension is setted
+		if pag.Ext == "" {
+			return errors.New("Page extension not setted")
+		}
+
+		// Check page.Data
+		if pag.Data == nil {
+
+			// Check if there is url
+			if pag.Url == "" {
+				err := pag.urlService(d.MediaId, strconv.Itoa(pageNum+1), page)
+				if err != nil {
+					return err
+				}
+			}
+
+			// Get data of image
+			err := pag.GetData()
+			if err != nil {
+				return err
+			}
+		}
+
+		// Generate name if
+		tmpl, err := templateSolver(pageNameTmpl, map[string]interface{}{
+			"pageNum": normalizePageName(pageNum+1, d.NumPages),
+			"ext":     pag.Ext,
+		})
+
+		// Check template error
+		if err != nil {
+			return err
+		}
+
+		// Download image
+		err = pag.Save(dirPath+"/"+tmpl, perm)
+		if err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

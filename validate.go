@@ -2,8 +2,8 @@ package nhentai
 
 import (
 	"fmt"
-	"github.com/go-playground/validator/v10"
 	"regexp"
+	"strings"
 )
 
 // validateDoujinUrl is a function that checks if the url of doujinshi is valid.
@@ -38,22 +38,8 @@ func validateNhentaiImageUrl(url string) bool {
 	return ok
 }
 
-// validateNhentaiImageUrl is a function that checks if the url of doujinshi page is valid.
-func validateDoujinPageUrl(fl validator.FieldLevel) bool {
-	doujinPageUrl := fl.Field().String()
-
-	ok, _ := regexp.MatchString(
-		`^https:\/\/(www.)?nhentai\.net\/g\/[0-9]{0,6}\/[0-9]+\/?$`,
-		doujinPageUrl,
-	)
-
-	return ok
-}
-
 // validateNhentaiImageUrl is a function that checks if the url of comment is valid.
-func validateCommentUrl(fl validator.FieldLevel) bool {
-	commentUrl := fl.Field().String()
-
+func validateCommentUrl(commentUrl string) bool {
 	ok, _ := regexp.MatchString(
 		`^https:\/\/(www.)?nhentai\.net\/g\/[0-9]{0,6}\/#comment-[0-9]+\/?$`,
 		commentUrl,
@@ -63,9 +49,7 @@ func validateCommentUrl(fl validator.FieldLevel) bool {
 }
 
 // validateNhentaiImageUrl is a function that checks if the url of user is valid.
-func validateUserUrl(fl validator.FieldLevel) bool {
-	userUrl := fl.Field().String()
-
+func validateUserUrl(userUrl string) bool {
 	ok, _ := regexp.MatchString(
 		`^https:\/\/(www.)?nhentai\.net\/users\/[0-9]+\/.+$`,
 		userUrl,
@@ -77,6 +61,13 @@ func validateUserUrl(fl validator.FieldLevel) bool {
 // validateImageType is a function that checks if the image type is valid
 func validateImageType(ext string) bool {
 	if (ext != "jpg") && (ext != "png") && (ext != "gif") {
+		return false
+	}
+	return true
+}
+
+func validateImageNameTemplate(tmpl string) bool {
+	if strings.Contains(tmpl, ".pageNum") && strings.Contains(tmpl, ".ext") {
 		return false
 	}
 	return true

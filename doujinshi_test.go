@@ -66,6 +66,23 @@ func TestDoujinshi_GetComments(t *testing.T) {
 	t.Log("Doujinshi_GetComments [OK]")
 }
 
+func TestDoujinshi_Save(t *testing.T) {
+	// Make doujinshi object
+	d, err := nhentai.NewDoujinshiId(370060)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Get related doujinshi comments
+	err = d.Save("/home/kiritonya/prova.txt", 0644, nhentai.DefaultImageNameTemplate)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log("Comments:", d.Comments)
+	t.Log("Doujinshi_GetComments [OK]")
+}
+
 func TestDoujinshi_UnmarshalJSON(t *testing.T) {
 	var d nhentai.Doujinshi
 

@@ -167,6 +167,33 @@ func (i *image) Save(path string, perm os.FileMode) error {
 	return nil
 }
 
+// GetUrl is a function that get the url of thumbnail image and assign it to the Thumbnail object
+func (t *Thumbnail) GetUrl(mediaId, numPage int) error {
+
+	// Check if the page number is valid
+	if numPage <= 0 {
+		return errors.New("Page number not valid")
+	}
+
+	return t.urlService(mediaId, strconv.Itoa(numPage), thumb)
+}
+
+// GetUrl is a function that get the url of page image and assign it to the Page object
+func (pi *Page) GetUrl(mediaId, numPage int) error {
+
+	// Check if the page number is valid
+	if numPage <= 0 {
+		return errors.New("Page number not valid")
+	}
+
+	return pi.urlService(mediaId, strconv.Itoa(numPage), page)
+}
+
+// GetUrl is a function that get the url of cover image and assign it to the Cover object
+func (c *Cover) GetUrl(mediaId int) error {
+	return c.urlService(mediaId, "cover", cover)
+}
+
 // GetUrl is a function that gets the url of the image and assign it to the image object
 func (i *image) urlService(mediaId int, pageNum string, imgType imageType) error {
 
@@ -229,31 +256,4 @@ func (i *image) urlService(mediaId int, pageNum string, imgType imageType) error
 	i.Url = url
 
 	return nil
-}
-
-// GetUrl is a function that get the url of thumbnail image and assign it to the Thumbnail object
-func (t *Thumbnail) GetUrl(mediaId, numPage int) error {
-
-	// Check if the page number is valid
-	if numPage <= 0 {
-		return errors.New("Page number not valid")
-	}
-
-	return t.urlService(mediaId, strconv.Itoa(numPage), thumb)
-}
-
-// GetUrl is a function that get the url of page image and assign it to the Page object
-func (pi *Page) GetUrl(mediaId, numPage int) error {
-
-	// Check if the page number is valid
-	if numPage <= 0 {
-		return errors.New("Page number not valid")
-	}
-
-	return pi.urlService(mediaId, strconv.Itoa(numPage), page)
-}
-
-// GetUrl is a function that get the url of cover image and assign it to the Cover object
-func (c *Cover) GetUrl(mediaId int) error {
-	return c.urlService(mediaId, "cover", cover)
 }

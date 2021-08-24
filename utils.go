@@ -3,6 +3,7 @@ package nhentai
 import (
 	"bytes"
 	"errors"
+	"strconv"
 	"text/template"
 )
 
@@ -33,4 +34,24 @@ func normalizeExt(ext string) (string, error) {
 	default:
 		return "", errors.New("Image type not found")
 	}
+}
+
+// normalizePageName is a function that generates the name of the images based on the total number of pages of the doujinshi.
+//pagTot: 50 => imgName: 01.jpg | pagTot: 9 => imgName: 1.jpg
+func normalizePageName(numPage, pageTot int) string {
+	var pageResult string
+
+	if pageTot > 9 {
+		pageResult += "0"
+	}
+
+	if pageTot > 99 {
+		pageResult += "0"
+	}
+
+	if pageTot > 999 {
+		pageResult += "0"
+	}
+
+	return pageResult + strconv.Itoa(numPage)
 }

@@ -1,7 +1,6 @@
 package nhentai
 
 import (
-	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
@@ -18,6 +17,9 @@ const (
 
 	// ThumbnailBaseUrl is the base url for the thumbnail link
 	ThumbnailBaseUrl string = "https://t.nhentai.net"
+
+	// ImageTemplate is the default template for generate the image name in the Doujinshi.Save method
+	DefaultImageNameTemplate string = "{{.pageNum}}.{{.ext}}"
 
 	// BaseUrlApi is the url base api of the site
 	baseUrlApi string = "https://nhentai.net/api"
@@ -45,13 +47,7 @@ const (
 
 // ClientHttp is the client used for http requests. The default value is http.DefaultClient.
 var ClientHttp *http.Client
-var validate *validator.Validate
 
 func init() {
-	validate = validator.New()
-	validate.RegisterValidation("doujin_page_url", validateDoujinPageUrl)
-	validate.RegisterValidation("comment_url", validateCommentUrl)
-	validate.RegisterValidation("user_url", validateUserUrl)
-
 	ClientHttp = http.DefaultClient
 }
