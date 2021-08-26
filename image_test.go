@@ -2,6 +2,7 @@ package nhentai_test
 
 import (
 	"github.com/KiritoNya/nhentai"
+	"log"
 	"testing"
 )
 
@@ -60,10 +61,13 @@ func TestImage_GetSize(t *testing.T) {
 func TestImage_GetData(t *testing.T) {
 	var p nhentai.Page
 	p.Url = pageUrl
+	p.Ext = ".jpg"
+
+	nhentai.UseProgressBar = true
 
 	err := p.GetData()
 	if err != nil {
-		t.Fatal(err)
+		log.Fatal(err)
 	}
 
 	if p.Data == nil {
@@ -87,11 +91,13 @@ func TestImage_GenerateName(t *testing.T) {
 }
 
 func TestImage_Save(t *testing.T) {
-	var p nhentai.Page
-	p.Url = pageUrl
-	p.Ext = ".jpg"
+	var p1 nhentai.Page
+	p1.Url = pageUrl
+	p1.Ext = ".jpg"
 
-	err := p.Save("./img.jpeg", 0644)
+	nhentai.UseProgressBar = true
+
+	err := p1.Save("./img.jpg", 0644)
 	if err != nil {
 		t.Fatal(err)
 	}

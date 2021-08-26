@@ -18,8 +18,14 @@ const (
 	// ThumbnailBaseUrl is the base url for the thumbnail link
 	ThumbnailBaseUrl string = "https://t.nhentai.net"
 
-	// ImageTemplate is the default template for generate the image name in the Doujinshi.Save method
-	DefaultImageNameTemplate string = "{{.pageNum}}.{{.ext}}"
+	// DefaultImageNameTemplate is the default template for generate the image name in the Doujinshi.Save method
+	DefaultImageNameTemplate string = "{{.Page.Num}}.{{.Page.Ext}}"
+
+	// DefaultDoujinNameTemplate is the default template for generate the doujin name folder in the Doujinshi.Save method
+	DefaultDoujinNameTemplate string = "{{.Doujinshi.Id}} - {{.Doujinshi.Title.Pretty}}"
+
+	// DefaultProgressBarTemplate is the default template for the progress bar
+	DefaultProgressBarTemplate string = `{{string . "prefix" | blue}} {{ bar . "[" "-" (cycle . "→") "." "]"}} {{speed . }} {{percent .}}`
 
 	// BaseUrlApi is the url base api of the site
 	baseUrlApi string = "https://nhentai.net/api"
@@ -48,6 +54,13 @@ const (
 // ClientHttp is the client used for http requests. The default value is http.DefaultClient.
 var ClientHttp *http.Client
 
+// ProgressBarTemplate is template for the progress bar
+var ProgressBarTemplate string
+
+// UseProgressBar used for some methods. By default it is false and the progress bar not used, but it can be set to true and the progress bar will be used automatically where necessary.
+var UseProgressBar bool
+
 func init() {
 	ClientHttp = http.DefaultClient
+	ProgressBarTemplate = DefaultProgressBarTemplate
 }

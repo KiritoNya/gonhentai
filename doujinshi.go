@@ -42,12 +42,6 @@ type Title struct {
 	Pretty   string
 }
 
-type DownloadOption struct {
-	All     bool
-	MinPage int
-	MaxPage int
-}
-
 // NewDoujinshiId is a constructor of the doujinshi object
 func NewDoujinshiId(id int) (*Doujinshi, error) {
 
@@ -205,12 +199,7 @@ func (d *Doujinshi) GetComments() error {
 }
 
 // Save is a function that download all pages of doujinshi in the specified directory. The name of image can be described by template.
-func (d *Doujinshi) Save(dirPath string, perm os.FileMode, pageNameTmpl string) error {
-
-	// Check template
-	if !validateImageNameTemplate(pageNameTmpl) {
-		return errors.New("\nInvalid template. The template must contain at least the fields '{{.pageNum}}' or '{{.ext}}'")
-	}
+func (d *Doujinshi) Save(dirPathTmpl string, perm os.FileMode) error {
 
 	// Check if pages is setted
 	if d.Pages == nil {
@@ -225,9 +214,20 @@ func (d *Doujinshi) Save(dirPath string, perm os.FileMode, pageNameTmpl string) 
 	// Foreach pages
 	for pageNum, pag := range d.Pages {
 
-		// Check if the extension is setted
-		if pag.Ext == "" {
-			return errors.New("Page extension not setted")
+		type Template struct {
+			Doujinshi *Doujinshi
+			Page      *Page
+		}
+
+		// Prepare template data
+		var t Template
+		t.Doujinshi = d
+		t.Page = pag
+
+		// Generate path from template
+		tmpl, err := templateSolver(dirPathTmpl, t)
+		if err != nil {
+			return err
 		}
 
 		// Check page.Data
@@ -241,6 +241,11 @@ func (d *Doujinshi) Save(dirPath string, perm os.FileMode, pageNameTmpl string) 
 				}
 			}
 
+			// Check name
+			if pag.Name == "" {
+				pag.Name = filepath.Base(tmpl)
+			}
+
 			// Get data of image
 			err := pag.GetData()
 			if err != nil {
@@ -248,19 +253,8 @@ func (d *Doujinshi) Save(dirPath string, perm os.FileMode, pageNameTmpl string) 
 			}
 		}
 
-		// Generate name if
-		tmpl, err := templateSolver(pageNameTmpl, map[string]interface{}{
-			"pageNum": normalizePageName(pageNum+1, d.NumPages),
-			"ext":     pag.Ext,
-		})
-
-		// Check template error
-		if err != nil {
-			return err
-		}
-
 		// Download image
-		err = pag.Save(dirPath+"/"+tmpl, perm)
+		err = pag.Save(tmpl, perm)
 		if err != nil {
 			return err
 		}
@@ -299,7 +293,7 @@ func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	for _, img := range pageImagesRaw {
+	for pageNum, img := range pageImagesRaw {
 		var p Page
 		var err error
 
@@ -307,6 +301,9 @@ func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 		if err != nil {
 			return err
 		}
+
+		// Set page number
+		p.Num = pageNum + 1
 
 		// Normalize image type
 		p.Ext, err = normalizeExt(p.Ext)

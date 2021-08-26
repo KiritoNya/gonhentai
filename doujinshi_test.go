@@ -73,14 +73,13 @@ func TestDoujinshi_Save(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	// Get related doujinshi comments
-	err = d.Save("/home/kiritonya/prova.txt", 0644, nhentai.DefaultImageNameTemplate)
+	// Save doujinshi
+	err = d.Save(pathTemplate, 0644)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	t.Log("Comments:", d.Comments)
-	t.Log("Doujinshi_GetComments [OK]")
+	t.Log("Doujinshi_Save [OK]")
 }
 
 func TestDoujinshi_UnmarshalJSON(t *testing.T) {

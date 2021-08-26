@@ -1,8 +1,10 @@
 package nhentai
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
+	"github.com/cheggaaa/pb/v3"
 	"io"
 	"os"
 	"path/filepath"
@@ -37,6 +39,7 @@ type Thumbnail struct {
 }
 
 type Page struct {
+	Num int
 	image
 }
 
@@ -78,6 +81,7 @@ func (i *image) GetSize() error {
 
 // GetData is a function that gets the data of image and assign it to the field object Data
 func (i *image) GetData() error {
+	var buff bytes.Buffer
 
 	// Check if the url is setted
 	if i.Url == "" {
@@ -96,13 +100,36 @@ func (i *image) GetData() error {
 		return errors.New("Url not valid")
 	}
 
-	// Read response body
-	content, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
+	// Prepare bar reader
+	if UseProgressBar {
+		numBytes := res.ContentLength
+		reader := io.LimitReader(res.Body, numBytes)
+
+		bar := pb.ProgressBarTemplate(ProgressBarTemplate).Start64(numBytes)
+		bar.Set(pb.Bytes, true)
+		bar.Set(pb.SIBytesPrefix, true)
+		bar.Set("prefix", i.Name)
+		barReader := bar.NewProxyReader(reader)
+
+		// Copy response to buffer
+		_, err = io.Copy(&buff, barReader)
+		if err != nil {
+			return err
+		}
+
+		// Close bar reader
+		bar.Finish()
+
+	} else {
+		// Copy response to buffer
+		_, err = io.Copy(&buff, res.Body)
+		if err != nil {
+			return err
+		}
 	}
 
-	i.Data = content
+	// Read buffer
+	i.Data = buff.Bytes()
 	return nil
 }
 
@@ -139,6 +166,11 @@ func (i *image) GenerateName(name, suffix string) error {
 // Save is a function that save the image on disk.
 func (i *image) Save(path string, perm os.FileMode) error {
 
+	// Check name
+	if i.Name == "" {
+		i.Name = filepath.Base(path)
+	}
+
 	// Check if data field is empty
 	if i.Data == nil {
 		err := i.GetData()
@@ -158,7 +190,7 @@ func (i *image) Save(path string, perm os.FileMode) error {
 		return err
 	}
 
-	// Save file
+	// Write file
 	err = os.WriteFile(path, i.Data, perm)
 	if err != nil {
 		return err
