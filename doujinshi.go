@@ -110,7 +110,7 @@ func NewDoujinshiUrl(url string) (*Doujinshi, error) {
 	return doujin, nil
 }
 
-// GetRelated is a funciton that gets the related doujinshi and assign them to the doujinshi object
+// GetRelated is a function that gets the related doujinshi and assign them to the doujinshi object
 func (d *Doujinshi) GetRelated() error {
 
 	type RespJson struct {

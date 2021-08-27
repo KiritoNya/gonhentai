@@ -30,19 +30,23 @@ type image struct {
 	Data   []byte
 }
 
+// Cover is a struct that contains all the information of the doujinshi cover
 type Cover struct {
 	image
 }
 
+// Thumbnail is a struct that contains all the information of a thumbnail
 type Thumbnail struct {
 	image
 }
 
+// Thumbnail is a struct that contains all the information of a doujinshi page
 type Page struct {
 	Num int
 	image
 }
 
+// Avatar is a struct that contains all the information of a user avatar
 type Avatar struct {
 	image
 }

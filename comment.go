@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Comment is a struct that contains all the information of a comment
 type Comment struct {
 	Id        int `validate:"min=0"`
 	GalleryId int `validate:"min=0"`

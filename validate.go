@@ -3,7 +3,6 @@ package nhentai
 import (
 	"fmt"
 	"regexp"
-	"strings"
 )
 
 // validateDoujinUrl is a function that checks if the url of doujinshi is valid.
@@ -61,13 +60,6 @@ func validateUserUrl(userUrl string) bool {
 // validateImageType is a function that checks if the image type is valid
 func validateImageType(ext string) bool {
 	if (ext != "jpg") && (ext != "png") && (ext != "gif") {
-		return false
-	}
-	return true
-}
-
-func validateImageNameTemplate(tmpl string) bool {
-	if strings.Contains(tmpl, ".pageNum") && strings.Contains(tmpl, ".ext") {
 		return false
 	}
 	return true
