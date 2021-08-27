@@ -1,4 +1,4 @@
-package nhentai_test
+package tests_test
 
 // Test input const
 const (

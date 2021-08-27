@@ -1,4 +1,4 @@
-package nhentai_test
+package tests_test
 
 import (
 	"encoding/json"
@@ -85,7 +85,7 @@ func TestDoujinshi_Save(t *testing.T) {
 func TestDoujinshi_UnmarshalJSON(t *testing.T) {
 	var d nhentai.Doujinshi
 
-	content, err := os.ReadFile("./tests/doujinshi.test.json")
+	content, err := os.ReadFile("./doujinshi.test.json")
 	if err != nil {
 		t.Fatal(err)
 	}
