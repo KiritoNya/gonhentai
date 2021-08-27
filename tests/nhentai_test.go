@@ -10,7 +10,7 @@ const (
 	dojinshiIdIncorrect   int    = 1255447877
 	pageUrl               string = "https://i.nhentai.net/galleries/1886630/36.jpg"
 	pageUrlIncorrect      string = "https://i.nhentai.net/galleries/1886630/360.jpg"
-	pathTemplate          string = "/home/kiritonya/Documenti/{{.Doujinshi.Id}} - {{.Doujinshi.Title.Pretty}}/{{.Page.Num}}.{{.Page.Ext}}"
-	pathTemplateIncorrect string = "/home/kiritonya/{{.Doujinshi.Fake}} - {{.Doujinshi.Title.Pretty}}/{{.Page.Num}}.{{.Page.Ext}}"
+	pathTemplate          string = "/home/<username>/{{.Doujinshi.Id}} - {{.Doujinshi.Title.Pretty}}/{{.Page.Num}}.{{.Page.Ext}}"
+	pathTemplateIncorrect string = "/home/<username>/{{.Doujinshi.Fake}} - {{.Doujinshi.Title.Pretty}}/{{.Page.Num}}.{{.Page.Ext}}"
 	imageName             string = "img.jpg"
 )
