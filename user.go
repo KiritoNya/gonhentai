@@ -2,13 +2,13 @@ package nhentai
 
 import "golang.org/x/net/html"
 
+// User is a struct that contains all of the user's information
 type User struct {
-	id           int `validate:"min=0"`
-	username     string
-	url          string
-	profileImage *Avatar
-	isSuperUser  bool
-	isStaff      bool
-	raw          string `validate:"json"`
+	Id           int `validate:"min=0"`
+	Username     string
+	Url          string
+	ProfileImage *Avatar
+	IsSuperUser  bool
+	IsStaff      bool
 	html         *html.Node
 }

@@ -40,7 +40,7 @@ type Thumbnail struct {
 	image
 }
 
-// Thumbnail is a struct that contains all the information of a doujinshi page
+// Page is a struct that contains all the information of a doujinshi page
 type Page struct {
 	Num int
 	image
@@ -185,7 +185,7 @@ func (i *image) Save(path string, perm os.FileMode) error {
 
 	// Verify if file already exists
 	if _, err := os.Stat(path); err == nil {
-		return errors.New(fmt.Sprintf(`File "%s" already exists`, path))
+		return fmt.Errorf(`File "%s" already exists`, path)
 	}
 
 	// Create empty file
