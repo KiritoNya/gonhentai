@@ -21,12 +21,12 @@ const (
 )
 
 type image struct {
-	Name   string `validate:"omitempty" json:",omitempty"`
-	Url    string `validate:"omitempty,nhentai_img_url" json:",omitempty"`
-	Size   int64  `validate:"omitempty,min=0" json:",omitempty"`
-	Heigth int    `validate:"omitempty,min=0" json:"h,omitempty"`
-	Width  int    `validate:"omitempty,min=0" json:"w,omitempty"`
-	Ext    string `validate:"omitempty,eq=jpg,eq=png,eq=gif" json:"t,omitempty"`
+	Name   string `json:",omitempty"`
+	Url    string `json:",omitempty"`
+	Size   int64  `json:",omitempty"`
+	Heigth int    `json:"h,omitempty"`
+	Width  int    `json:"w,omitempty"`
+	Ext    string `json:"t,omitempty"`
 	Data   []byte
 }
 
