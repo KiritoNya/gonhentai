@@ -14,7 +14,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/KiritoNya/nhentai">
-    <img src="https://files.catbox.moe/dwzbu6.png" alt="Logo" width="500" height="250"
+    <img src="https://files.catbox.moe/dwzbu6.png" alt="Logo" width="500" height="250">
   </a>
   <h3 align="center">GOnhentai</h3>
 
