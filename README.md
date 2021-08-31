@@ -3,7 +3,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![MIT License][license-shield]][license-url]
 
 [![GoDoc](https://godoc.org/github.com/KiritoNya/nhentai?status.svg)](https://pkg.go.dev/github.com/KiritoNya/nhentai)
 [![Go Report Card](https://goreportcard.com/badge/github.com/KiritoNya/nhentai)](https://goreportcard.com/report/github.com/KiritoNya/nhentai)
@@ -14,7 +13,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/KiritoNya/nhentai">
-    <img src="https://files.catbox.moe/8biu8j.png" alt="Logo" width="500" height="500">
+    <img src="https://files.catbox.moe/dwzbu6.png" alt="Logo" width="500" height="250">
   </a>
   <h3 align="center">GOnhentai</h3>
 
