@@ -64,3 +64,11 @@ func validateImageType(ext string) bool {
 	}
 	return true
 }
+
+// validateQuerySort is a function that checks if the query sort is valid
+func validateQuerySort(sort Sort) bool {
+	if sort != Recent || sort != PopularAllTime || sort != PopularToday || sort != PopularThisWeek {
+		return false
+	}
+	return true
+}

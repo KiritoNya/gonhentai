@@ -7,6 +7,7 @@ import (
 	"io"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 type Sort string
@@ -40,6 +41,10 @@ func RecentDoujinshi(opts QueryOptions) (qr QueryResult, err error) {
 // Search is a function that returns the doujinshi searched
 func Search(query string, opt QueryOptions) (qr QueryResult, err error) {
 
+	if validateQuerySort(opt.Sort) {
+		return QueryResult{}, errors.New("Sort query option not valid")
+	}
+
 	// Check if page is setted to all
 	if opt.Page == "" || opt.Page == "all" || opt.Page == "All" || opt.Page == "ALL" {
 		fmt.Println("ALL")
@@ -56,6 +61,11 @@ func Search(query string, opt QueryOptions) (qr QueryResult, err error) {
 
 // SearchTag is a function that returns the doujinshi related to searched tags
 func SearchTag(tagId int, opt QueryOptions) (qr QueryResult, err error) {
+
+	if validateQuerySort(opt.Sort) {
+		return QueryResult{}, errors.New("Sort query option not valid")
+	}
+
 	// Set template parameters
 	tmpVar := struct {
 		Option QueryOptions
@@ -71,6 +81,9 @@ func SearchTag(tagId int, opt QueryOptions) (qr QueryResult, err error) {
 		return QueryResult{}, err
 	}
 	queryUrl = baseUrlApi + queryUrl
+	if opt.Sort == "" {
+		queryUrl = strings.Replace(queryUrl, "&sort=", "", -1)
+	}
 
 	// Do request
 	resp, err := ClientHttp.Get(queryUrl)
