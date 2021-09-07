@@ -2,10 +2,10 @@ package nhentai
 
 // Tag is a struct that contains all the information related to the tags of a doujinshi
 type Tag struct {
-	id    int `validate:"min=0"`
-	name  string
-	url   string
-	count int `validate:"min=1"`
+	Id    int
+	Name  string
+	Url   string
+	Count int
 }
 
 // Group is a specific type of Tag

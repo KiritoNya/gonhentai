@@ -61,8 +61,7 @@
 
 ```GOnhentai``` is a simple generic library that tries to create a base for all programs written in GO that use data from the [nhentai](https://nhentai.net) site.
 
-This library introduces new features, including the management of comments and
-the management of comments and some user features (WIP).
+This library introduces new features, including the management of comments and some user features (WIP).
 
 <!-- GETTING STARTED -->
 ## Getting Started

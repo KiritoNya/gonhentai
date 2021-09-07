@@ -38,11 +38,11 @@ const (
 
 	// galleries/search?query=${query}&page=${page}&sort=${sort}
 	// searchApi is the endpoint for get the result of research
-	searchApi string = "/galleries/search"
+	searchApi string = "/galleries/search?query={{.Search}}&page={{.Option.Page}}&sort={{.Option.Sort}}"
 
 	// galleries/tagged?tag_id=${id}&page=${page}${sort ? `&sort=${sort}
 	// searchTagIdApi is the endpoint for get the result of tagId research
-	searchTagIdApi string = "/galleries/tagged?{{ $count := 0 }}{{ if .id }}tag_id={{.id}}{{$count := add $count 1}}{{end}}{{if .page}}{{if $count gt 0}}&{{end}}page={{.page}}{{$count := add $count 1}}{{end}}{{if .sort}}{{if $count gt 0}}&{{end}}sort={{.sort}}{{end}}"
+	searchTagIdApi string = "/galleries/tagged?tag_id={{.TagId}}&page={{.Option.Page}}&sort={{.Option.Sort}}"
 
 	// searchRelatedApi is the endpoint for get the related doujinshi
 	searchRelatedApi string = "/gallery/{{.id}}/related"

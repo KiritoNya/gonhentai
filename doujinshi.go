@@ -3,6 +3,7 @@ package nhentai
 import (
 	"encoding/json"
 	"errors"
+	"github.com/KiritoNya/nhentai/internal/pkg/raw"
 	"io"
 	"io/ioutil"
 	"os"
@@ -33,6 +34,7 @@ type Doujinshi struct {
 	NumFavorites int
 	Related      []*Doujinshi
 	Comments     []*Comment
+	raw          json.RawMessage
 }
 
 // Title is the data struct that describes the doujinshi title
@@ -110,7 +112,19 @@ func NewDoujinshiUrl(url string) (*Doujinshi, error) {
 	return doujin, nil
 }
 
-// GetRelated is a function that gets the related doujinshi and assign them to the doujinshi object
+// GetUrl is a function that gets the url of the doujinshi and assign them to the doujinshi object
+func (d *Doujinshi) GetUrl() error {
+
+	// Validate id
+	if !validateNhentaiId(d.Id) {
+		return errors.New("Id not valid")
+	}
+
+	d.Url = DoujinBaseUrl + strconv.Itoa(d.Id)
+	return nil
+}
+
+// GetRelated is a function that gets the related doujinshi and assign it to the doujinshi object
 func (d *Doujinshi) GetRelated() error {
 
 	type RespJson struct {
@@ -265,180 +279,151 @@ func (d *Doujinshi) Save(dirPathTmpl string, perm os.FileMode) error {
 
 // UnmarshalJSON is a json parser of doujinshi object
 func (d *Doujinshi) UnmarshalJSON(b []byte) error {
-	var rawDoujin map[string]json.RawMessage
+	var tempMap map[string]json.RawMessage
 
 	// Unmarshal
-	err := json.Unmarshal(b, &rawDoujin)
+	err := json.Unmarshal(b, &tempMap)
 	if err != nil {
 		return err
 	}
 
-	// Parse title
-	err = json.Unmarshal(rawDoujin["title"], &d.Title)
+	// Create raw object
+	rd, err := raw.NewDoujinRaw(tempMap)
 	if err != nil {
 		return err
 	}
 
-	// Parse images
-	var imagesRaw map[string]json.RawMessage
-	err = json.Unmarshal(rawDoujin["images"], &imagesRaw)
+	// Get data
+	doujinData, err := rd.All()
 	if err != nil {
 		return err
 	}
 
-	// Parse pages
-	var pageImagesRaw []json.RawMessage
-	err = json.Unmarshal(imagesRaw["pages"], &pageImagesRaw)
-	if err != nil {
-		return err
-	}
+	// Assign values
+	d.Id = doujinData["Id"].(int)
+	d.MediaId = doujinData["MediaId"].(int)
+	d.Scanlator = doujinData["Scanlator"].(string)
+	d.UploadDate = doujinData["UploadDate"].(time.Time)
+	d.NumPages = doujinData["NumPages"].(int)
+	d.NumFavorites = doujinData["NumFavorites"].(int)
 
-	for pageNum, img := range pageImagesRaw {
+	// Assign title values
+	var title Title
+	titleMap := doujinData["Title"].(map[string]string)
+	title.English = titleMap["English"]
+	title.Japanese = titleMap["Japanese"]
+	title.Pretty = titleMap["Pretty"]
+	d.Title = &title
+
+	// Assign cover values
+	var c Cover
+	coverMap := doujinData["Cover"].(map[string]interface{})
+	c.Ext = coverMap["Ext"].(string)
+	c.Width = coverMap["Width"].(int)
+	c.Heigth = coverMap["Height"].(int)
+	d.CoverImage = &c
+
+	// Assign thumbnail values
+	var t Thumbnail
+	thumbMap := doujinData["Thumbnail"].(map[string]interface{})
+	t.Ext = thumbMap["Ext"].(string)
+	t.Width = thumbMap["Width"].(int)
+	t.Heigth = thumbMap["Height"].(int)
+	d.Thumbnail = &t
+
+	// Assign pages values
+	pagesMap := doujinData["Pages"].([]map[string]interface{})
+	for numPage, pageMap := range pagesMap {
 		var p Page
-		var err error
-
-		err = json.Unmarshal(img, &p)
-		if err != nil {
-			return err
-		}
-
-		// Set page number
-		p.Num = pageNum + 1
-
-		// Normalize image type
-		p.Ext, err = normalizeExt(p.Ext)
-		if err != nil {
-			return err
-		}
-
-		// Append
+		p.Ext = pageMap["Ext"].(string)
+		p.Width = pageMap["Width"].(int)
+		p.Heigth = pageMap["Height"].(int)
+		p.Num = numPage
 		d.Pages = append(d.Pages, &p)
 	}
 
-	// Parse cover image
-	var coverImage Cover
-	err = json.Unmarshal(imagesRaw["cover"], &coverImage)
-	if err != nil {
-		return err
-	}
-	//cover := Cover(coverImage)
-	d.CoverImage = &coverImage
+	// Assign parodies values
+	parodiesMap := doujinData["Parodies"].([]map[string]interface{})
+	for _, parodyMap := range parodiesMap {
+		var p Parody
+		p.Id = parodyMap["Id"].(int)
+		p.Name = parodyMap["Name"].(string)
+		p.Url = parodyMap["Url"].(string)
+		p.Count = parodyMap["Count"].(int)
 
-	// Parse thumbnail
-	var thumbnail Thumbnail
-	err = json.Unmarshal(imagesRaw["thumbnail"], &thumbnail)
-	if err != nil {
-		return err
-	}
-	//thumbnailObj := Thumbnail(thumbnail)
-	d.Thumbnail = &thumbnail
-
-	// Parse tags
-	var tagsRaw []json.RawMessage
-	err = json.Unmarshal(rawDoujin["tags"], &tagsRaw)
-	if err != nil {
-		return err
+		d.Parodies = append(d.Parodies, &p)
 	}
 
-	for _, tagRaw := range tagsRaw {
-		var tagMap map[string]interface{}
-		var tag Tag
-		var err error
+	// Assign characters values
+	charactersMap := doujinData["Characters"].([]map[string]interface{})
+	for _, characterMap := range charactersMap {
+		var c Character
+		c.Id = characterMap["Id"].(int)
+		c.Name = characterMap["Name"].(string)
+		c.Url = characterMap["Url"].(string)
+		c.Count = characterMap["Count"].(int)
 
-		err = json.Unmarshal(tagRaw, &tagMap)
-		if err != nil {
-			return err
-		}
-
-		tag.id = int(tagMap["id"].(float64))
-		tag.name = tagMap["name"].(string)
-		tag.count = int(tagMap["count"].(float64))
-		tag.url = tagMap["url"].(string)
-
-		// Filter by tag type
-		switch tagMap["type"].(string) {
-		case "parody":
-			tagParody := Parody(tag)
-			d.Parodies = append(d.Parodies, &tagParody)
-		case "character":
-			tagCharacter := Character(tag)
-			d.Characters = append(d.Characters, &tagCharacter)
-		case "tag":
-			d.Tags = append(d.Tags, &tag)
-		case "artist":
-			tagArtist := Artist(tag)
-			d.Artists = append(d.Artists, &tagArtist)
-		case "group":
-			tagGroup := Group(tag)
-			d.Groups = append(d.Groups, &tagGroup)
-		case "language":
-			tagLanguage := Language(tag)
-			d.Languages = append(d.Languages, &tagLanguage)
-		case "category":
-			tagCategory := Category(tag)
-			d.Categories = append(d.Categories, &tagCategory)
-		default:
-			return errors.New("Tag type not found")
-		}
+		d.Characters = append(d.Characters, &c)
 	}
 
-	// Parse id
-	err = json.Unmarshal(rawDoujin["id"], &d.Id)
-	if err != nil {
+	// Assign tags values
+	tagsMap := doujinData["Tags"].([]map[string]interface{})
+	for _, tagMap := range tagsMap {
+		var t Tag
+		t.Id = tagMap["Id"].(int)
+		t.Name = tagMap["Name"].(string)
+		t.Url = tagMap["Url"].(string)
+		t.Count = tagMap["Count"].(int)
 
-		// Check if id is a string
-		var idString string
-		err2 := json.Unmarshal(rawDoujin["id"], &idString)
-		if err2 != nil {
-			// It isn't a string, it's a real error
-			return err2
-		}
-
-		// Convert string to int
-		idInt, err := strconv.Atoi(idString)
-		if err2 != nil {
-			return err
-		}
-
-		// Assign id to id field
-		d.Id = idInt
+		d.Tags = append(d.Tags, &t)
 	}
 
-	// Parse media id
-	var mediaIdString string
-	err = json.Unmarshal(rawDoujin["media_id"], &mediaIdString)
-	if err != nil {
-		return err
-	}
-	d.MediaId, err = strconv.Atoi(mediaIdString)
-	if err != nil {
-		return err
+	// Assign artists values
+	artistsMap := doujinData["Artists"].([]map[string]interface{})
+	for _, artistMap := range artistsMap {
+		var a Artist
+		a.Id = artistMap["Id"].(int)
+		a.Name = artistMap["Name"].(string)
+		a.Url = artistMap["Url"].(string)
+		a.Count = artistMap["Count"].(int)
+
+		d.Artists = append(d.Artists, &a)
 	}
 
-	// Parse scanlator
-	err = json.Unmarshal(rawDoujin["scanlator"], &d.Scanlator)
-	if err != nil {
-		return err
+	// Assign groups values
+	groupsMap := doujinData["Groups"].([]map[string]interface{})
+	for _, groupMap := range groupsMap {
+		var g Group
+		g.Id = groupMap["Id"].(int)
+		g.Name = groupMap["Name"].(string)
+		g.Url = groupMap["Url"].(string)
+		g.Count = groupMap["Count"].(int)
+
+		d.Groups = append(d.Groups, &g)
 	}
 
-	// Parse upload date
-	var uploadUnixDate int64
-	err = json.Unmarshal(rawDoujin["upload_date"], &uploadUnixDate)
-	if err != nil {
-		return err
-	}
-	d.UploadDate = time.Unix(uploadUnixDate, 0)
+	// Assign language values
+	languagesMap := doujinData["Languages"].([]map[string]interface{})
+	for _, languageMap := range languagesMap {
+		var l Language
+		l.Id = languageMap["Id"].(int)
+		l.Name = languageMap["Name"].(string)
+		l.Url = languageMap["Url"].(string)
+		l.Count = languageMap["Count"].(int)
 
-	// Parse number of pages
-	err = json.Unmarshal(rawDoujin["num_pages"], &d.NumPages)
-	if err != nil {
-		return err
+		d.Languages = append(d.Languages, &l)
 	}
 
-	// Parse number of favorites
-	err = json.Unmarshal(rawDoujin["num_favorites"], &d.NumFavorites)
-	if err != nil {
-		return err
+	// Assign categories values
+	categoriesMap := doujinData["Categories"].([]map[string]interface{})
+	for _, categoryMap := range categoriesMap {
+		var c Category
+		c.Id = categoryMap["Id"].(int)
+		c.Name = categoryMap["Name"].(string)
+		c.Url = categoryMap["Url"].(string)
+		c.Count = categoryMap["Count"].(int)
+
+		d.Categories = append(d.Categories, &c)
 	}
 
 	return nil

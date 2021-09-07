@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewDoujinshiId(t *testing.T) {
-	doujin, err := nhentai.NewDoujinshiId(dojinshiId)
+	doujin, err := nhentai.NewDoujinshiId(doujinshiId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,7 +20,7 @@ func TestNewDoujinshiId(t *testing.T) {
 
 func TestNewDoujinshiUrl(t *testing.T) {
 
-	doujinUrl := nhentai.DoujinBaseUrl + strconv.Itoa(dojinshiId)
+	doujinUrl := nhentai.DoujinBaseUrl + strconv.Itoa(doujinshiId)
 
 	doujin, err := nhentai.NewDoujinshiUrl(doujinUrl)
 	if err != nil {
@@ -31,10 +31,23 @@ func TestNewDoujinshiUrl(t *testing.T) {
 	t.Log("NewDoujinshiUrl [OK]")
 }
 
+func TestDoujinshi_GetUrl(t *testing.T) {
+	var d nhentai.Doujinshi
+	d.Id = doujinshiId
+
+	err := d.GetUrl()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log("URL:", d.Url)
+	t.Log("Doujinshi_GetUrl [OK]")
+}
+
 func TestDoujinshi_GetRelated(t *testing.T) {
 
 	// Make doujinshi object
-	d, err := nhentai.NewDoujinshiId(dojinshiId)
+	d, err := nhentai.NewDoujinshiId(doujinshiId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,7 +64,7 @@ func TestDoujinshi_GetRelated(t *testing.T) {
 
 func TestDoujinshi_GetComments(t *testing.T) {
 	// Make doujinshi object
-	d, err := nhentai.NewDoujinshiId(dojinshiId)
+	d, err := nhentai.NewDoujinshiId(doujinshiId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,6 +108,11 @@ func TestDoujinshi_UnmarshalJSON(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Log("Doujinshi: ", d)
+	data, err := json.MarshalIndent(d, " ", "\t")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(string(data))
 	t.Log("DoujinshiUnmarshalJSON: [OK]")
 }
