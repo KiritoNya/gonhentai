@@ -1,4 +1,4 @@
-package tests_test
+package nhentai_test
 
 import (
 	"github.com/KiritoNya/nhentai"

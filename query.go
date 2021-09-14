@@ -19,17 +19,22 @@ const (
 	PopularToday    = "popular-today"
 )
 
-// QueryOptions is the option of a query
+// QueryOptions is a type for the option of a query
 type QueryOptions struct {
 	Page string
 	Sort Sort
 }
 
-// QueryResult is the result of a Query
+// QueryResult is a type for the result of a Query
 type QueryResult struct {
 	Result   []*Doujinshi `json:"result"`
 	NumPages int          `json:"num_pages"`
 	PerPage  int          `json:"per_page"`
+}
+
+type QueryFilter struct {
+	ToDelete []Filter
+	ToFilter []Filter
 }
 
 // RecentDoujinshi is a function that returns the recent doujinshi
@@ -41,7 +46,7 @@ func RecentDoujinshi(opts QueryOptions) (qr QueryResult, err error) {
 // Search is a function that returns the doujinshi searched
 func Search(query string, opt QueryOptions) (qr QueryResult, err error) {
 
-	if validateQuerySort(opt.Sort) {
+	if !validateQuerySort(opt.Sort) {
 		return QueryResult{}, errors.New("Sort query option not valid")
 	}
 
@@ -107,6 +112,54 @@ func SearchTag(tagId int, opt QueryOptions) (qr QueryResult, err error) {
 	return qr, nil
 }
 
+// SearchCustom is a function that search doujinshi with query and filter them by tag.
+func SearchCustom(query string, filters QueryFilter) (qr QueryResult, err error) {
+	// Validate query
+	if query == "" {
+		return QueryResult{}, errors.New("Query not valid. Use searchTag function if you want search doujinshi by tag.")
+	}
+
+	// Validate filters
+	err = validateFilters(filters.ToFilter)
+	if err != nil {
+		return QueryResult{}, err
+	}
+
+	// Validate filters
+	err = validateFilters(filters.ToDelete)
+	if err != nil {
+		return QueryResult{}, err
+	}
+
+	// Normal search by query
+	results, err := searchAll(query, QueryOptions{Page: "", Sort: ""})
+	if err != nil {
+		return QueryResult{}, err
+	}
+
+	// Foreach results, filter for delete option
+	var filterDoujinshi []*Doujinshi
+	for i := 0; i < len(results.Result); i++ {
+
+		// Check if it's a doujinshi to removed
+		toDelete, _ := toBeDelete(results.Result[i], filters.ToDelete)
+		if toDelete {
+			continue
+		}
+
+		// Check if it's a doujinshi to filter
+		toFilter, _ := toBeFilter(results.Result[i], filters.ToFilter)
+		if toFilter {
+			filterDoujinshi = append(filterDoujinshi, results.Result[i])
+		}
+	}
+
+	qr.NumPages = 0
+	qr.PerPage = 0
+	qr.Result = filterDoujinshi
+	return qr, nil
+}
+
 // search is utility function
 func search(query string, opt QueryOptions) (qr QueryResult, err error) {
 	// Set template parameters
@@ -158,7 +211,7 @@ func searchAll(query string, opt QueryOptions) (qr QueryResult, err error) {
 	}
 
 	// for each page
-	for i := 2; i < queryPag1.NumPages; i++ {
+	for i := 2; i <= queryPag1.NumPages; i++ {
 		opt.Page = strconv.Itoa(i)
 
 		// Get query result for single page
@@ -167,11 +220,11 @@ func searchAll(query string, opt QueryOptions) (qr QueryResult, err error) {
 			return QueryResult{}, err
 		}
 
-		fmt.Println(queryResult.Result)
-
 		// Append results of single page
 		queryPag1.Result = append(queryPag1.Result, queryResult.Result...)
 	}
 
 	return queryPag1, nil
 }
+
+//slice = append(slice[:i], slice[i+1:]...)

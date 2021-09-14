@@ -23,19 +23,22 @@ type Doujinshi struct {
 	Pages        []*Page
 	Scanlator    string
 	UploadDate   time.Time
-	Parodies     []*Parody
-	Characters   []*Character
-	Tags         []*Tag
-	Artists      []*Artist
-	Groups       []*Group
-	Languages    []*Language
-	Categories   []*Category
+	Parodies     []*TagInfo
+	Characters   []*TagInfo
+	Tags         []*TagInfo
+	Artists      []*TagInfo
+	Groups       []*TagInfo
+	Languages    []*TagInfo
+	Categories   []*TagInfo
 	NumPages     int
 	NumFavorites int
 	Related      []*Doujinshi
 	Comments     []*Comment
 	raw          json.RawMessage
 }
+
+// DoujinshiCollection is the data struct that describes a collection of doujinshi
+type DoujinshiCollection []*Doujinshi
 
 // Title is the data struct that describes the doujinshi title
 type Title struct {
@@ -345,35 +348,38 @@ func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 	// Assign parodies values
 	parodiesMap := doujinData["Parodies"].([]map[string]interface{})
 	for _, parodyMap := range parodiesMap {
-		var p Parody
-		p.Id = parodyMap["Id"].(int)
-		p.Name = parodyMap["Name"].(string)
-		p.Url = parodyMap["Url"].(string)
-		p.Count = parodyMap["Count"].(int)
+		var t TagInfo
+		t.Id = parodyMap["Id"].(int)
+		t.Name = parodyMap["Name"].(string)
+		t.Url = parodyMap["Url"].(string)
+		t.Count = parodyMap["Count"].(int)
+		t.Type = TagsType(parodyMap["Type"].(string))
 
-		d.Parodies = append(d.Parodies, &p)
+		d.Parodies = append(d.Parodies, &t)
 	}
 
 	// Assign characters values
 	charactersMap := doujinData["Characters"].([]map[string]interface{})
 	for _, characterMap := range charactersMap {
-		var c Character
-		c.Id = characterMap["Id"].(int)
-		c.Name = characterMap["Name"].(string)
-		c.Url = characterMap["Url"].(string)
-		c.Count = characterMap["Count"].(int)
+		var t TagInfo
+		t.Id = characterMap["Id"].(int)
+		t.Name = characterMap["Name"].(string)
+		t.Url = characterMap["Url"].(string)
+		t.Count = characterMap["Count"].(int)
+		t.Type = TagsType(characterMap["Type"].(string))
 
-		d.Characters = append(d.Characters, &c)
+		d.Characters = append(d.Characters, &t)
 	}
 
 	// Assign tags values
 	tagsMap := doujinData["Tags"].([]map[string]interface{})
 	for _, tagMap := range tagsMap {
-		var t Tag
+		var t TagInfo
 		t.Id = tagMap["Id"].(int)
 		t.Name = tagMap["Name"].(string)
 		t.Url = tagMap["Url"].(string)
 		t.Count = tagMap["Count"].(int)
+		t.Type = TagsType(tagMap["Type"].(string))
 
 		d.Tags = append(d.Tags, &t)
 	}
@@ -381,50 +387,85 @@ func (d *Doujinshi) UnmarshalJSON(b []byte) error {
 	// Assign artists values
 	artistsMap := doujinData["Artists"].([]map[string]interface{})
 	for _, artistMap := range artistsMap {
-		var a Artist
-		a.Id = artistMap["Id"].(int)
-		a.Name = artistMap["Name"].(string)
-		a.Url = artistMap["Url"].(string)
-		a.Count = artistMap["Count"].(int)
+		var t TagInfo
+		t.Id = artistMap["Id"].(int)
+		t.Name = artistMap["Name"].(string)
+		t.Url = artistMap["Url"].(string)
+		t.Count = artistMap["Count"].(int)
+		t.Type = TagsType(artistMap["Type"].(string))
 
-		d.Artists = append(d.Artists, &a)
+		d.Artists = append(d.Artists, &t)
 	}
 
 	// Assign groups values
 	groupsMap := doujinData["Groups"].([]map[string]interface{})
 	for _, groupMap := range groupsMap {
-		var g Group
-		g.Id = groupMap["Id"].(int)
-		g.Name = groupMap["Name"].(string)
-		g.Url = groupMap["Url"].(string)
-		g.Count = groupMap["Count"].(int)
+		var t TagInfo
+		t.Id = groupMap["Id"].(int)
+		t.Name = groupMap["Name"].(string)
+		t.Url = groupMap["Url"].(string)
+		t.Count = groupMap["Count"].(int)
+		t.Type = TagsType(groupMap["Type"].(string))
 
-		d.Groups = append(d.Groups, &g)
+		d.Groups = append(d.Groups, &t)
 	}
 
 	// Assign language values
 	languagesMap := doujinData["Languages"].([]map[string]interface{})
 	for _, languageMap := range languagesMap {
-		var l Language
-		l.Id = languageMap["Id"].(int)
-		l.Name = languageMap["Name"].(string)
-		l.Url = languageMap["Url"].(string)
-		l.Count = languageMap["Count"].(int)
+		var t TagInfo
+		t.Id = languageMap["Id"].(int)
+		t.Name = languageMap["Name"].(string)
+		t.Url = languageMap["Url"].(string)
+		t.Count = languageMap["Count"].(int)
+		t.Type = TagsType(languageMap["Type"].(string))
 
-		d.Languages = append(d.Languages, &l)
+		d.Languages = append(d.Languages, &t)
 	}
 
 	// Assign categories values
 	categoriesMap := doujinData["Categories"].([]map[string]interface{})
 	for _, categoryMap := range categoriesMap {
-		var c Category
-		c.Id = categoryMap["Id"].(int)
-		c.Name = categoryMap["Name"].(string)
-		c.Url = categoryMap["Url"].(string)
-		c.Count = categoryMap["Count"].(int)
+		var t TagInfo
+		t.Id = categoryMap["Id"].(int)
+		t.Name = categoryMap["Name"].(string)
+		t.Url = categoryMap["Url"].(string)
+		t.Count = categoryMap["Count"].(int)
+		t.Type = TagsType(categoryMap["Type"].(string))
 
-		d.Categories = append(d.Categories, &c)
+		d.Categories = append(d.Categories, &t)
 	}
 
 	return nil
 }
+
+// extractTags is a function that merge all type of tags in the doujinshi object.
+func (d *Doujinshi) extractTags() []*TagInfo {
+	// Merge all type of tags
+	var tags []*TagInfo
+	tags = append(tags, d.Tags...)
+	tags = append(tags, d.Characters...)
+	tags = append(tags, d.Parodies...)
+	tags = append(tags, d.Tags...)
+	tags = append(tags, d.Groups...)
+	tags = append(tags, d.Artists...)
+	tags = append(tags, d.Languages...)
+	return tags
+}
+
+/*
+=====================================
+	DOUJIN COLLECTION METHODS
+=====================================
+*/
+
+/*
+func (dc *DoujinshiCollection) Filter(filters Filters) {
+	deletedCount := 0
+	for _, doujin := range dc {
+		for _, tag := range doujin.Tags {
+			tag.
+		}
+	}
+}
+*/

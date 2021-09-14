@@ -421,7 +421,7 @@ func (dr *DoujinRaw) All() (doujinMap map[string]interface{}, err error) {
 	}
 
 	// Get languages of doujinshi
-	languagesRaw, err := dr.Tags()
+	languagesRaw, err := dr.Languages()
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,7 @@
 package nhentai
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 )
@@ -67,8 +68,18 @@ func validateImageType(ext string) bool {
 
 // validateQuerySort is a function that checks if the query sort is valid
 func validateQuerySort(sort Sort) bool {
-	if sort != Recent || sort != PopularAllTime || sort != PopularToday || sort != PopularThisWeek {
+	if sort != Recent && sort != PopularAllTime && sort != PopularToday && sort != PopularThisWeek {
 		return false
 	}
 	return true
+}
+
+// validateFilters is a function that checks if the filters are valid
+func validateFilters(filters []Filter) error {
+	for _, filter := range filters {
+		if filter.Type == "" {
+			return errors.New("Type attribute of filter must be specified")
+		}
+	}
+	return nil
 }

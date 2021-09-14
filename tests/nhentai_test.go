@@ -1,4 +1,6 @@
-package tests_test
+package nhentai_test
+
+import "github.com/KiritoNya/nhentai"
 
 // Test input const
 const (
@@ -14,3 +16,36 @@ const (
 	pathTemplateIncorrect string = "/home/<username>/{{.Doujinshi.Fake}} - {{.Doujinshi.Title.Pretty}}/{{.Page.Num}}.{{.Page.Ext}}"
 	imageName             string = "img.jpg"
 )
+
+var InputTests = struct {
+	SearchQuery string
+	SearchTag   int
+	QueryFilter nhentai.QueryFilter
+	QueryOption nhentai.QueryOptions
+}{
+	SearchQuery: "Blend s",
+	SearchTag:   0,
+	QueryFilter: nhentai.QueryFilter{
+		ToDelete: []nhentai.Filter{
+			{
+				Id:   0,
+				Name: "yaoi",
+				Type: nhentai.Tag,
+			},
+		},
+		ToFilter: []nhentai.Filter{
+			{
+				Id:   0,
+				Name: "maika sakuranomiya",
+				Type: nhentai.Character,
+			},
+		},
+	},
+	QueryOption: nhentai.QueryOptions{Page: "1"},
+}
+
+var OutputTest = struct {
+	SearchCustom int
+}{
+	SearchCustom: 22,
+}

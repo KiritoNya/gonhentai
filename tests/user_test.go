@@ -1,1 +1,1 @@
-package tests
+package nhentai_test
