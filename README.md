@@ -4,9 +4,9 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-[![GoDoc](https://godoc.org/github.com/KiritoNya/nhentai?status.svg)](https://pkg.go.dev/github.com/KiritoNya/nhentai)
-[![Go Report Card](https://goreportcard.com/badge/github.com/KiritoNya/nhentai)](https://goreportcard.com/report/github.com/KiritoNya/nhentai)
-[![Sourcegraph](https://sourcegraph.com/github.com/KiritoNya/nhentai/-/badge.svg)](https://sourcegraph.com/github.com/KiritoNya/nhentai?badge)
+[![GoDoc](https://pkg.go.dev/github.com/KiritoNya/gonhentai)
+[![Go Report Card](https://goreportcard.com/badge/github.com/KiritoNya/gonhentai)](https://goreportcard.com/report/github.com/KiritoNya/nhentai)
+[![Sourcegraph](https://sourcegraph.com/github.com/KiritoNya/gonhentai/-/badge.svg)](https://sourcegraph.com/github.com/KiritoNya/nhentai?badge)
 
 
 <!-- PROJECT LOGO -->
@@ -281,13 +281,13 @@ Anilist: [KiritnoNya](https://anilist.co/user/KiritoNya/)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/KiritoNya/nhentai.svg?style=for-the-badge
-[contributors-url]: https://github.com/KiritoNya/nhentai/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/KiritoNya/nhentai.svg?style=for-the-badge
-[forks-url]: https://github.com/KiritoNya/nhentai/network/members
-[stars-shield]: https://img.shields.io/github/stars/KiritoNya/nhentai.svg?style=for-the-badge
-[stars-url]: https://github.com/KiritoNya/nhentai/stargazers
-[issues-shield]: https://img.shields.io/github/issues/KiritoNya/nhentai.svg?style=for-the-badge
-[issues-url]: https://github.com/KiritoNya/nhentai/issues
-[license-shield]: https://img.shields.io/github/license/KiritoNya/nhentai.svg?style=for-the-badge
-[license-url]: https://github.com/KiritoNya/nhentai/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/KiritoNya/gonhentai.svg?style=for-the-badge
+[contributors-url]: https://github.com/KiritoNya/gonhentai/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/KiritoNya/gonhentai.svg?style=for-the-badge
+[forks-url]: https://github.com/KiritoNya/gonhentai/network/members
+[stars-shield]: https://img.shields.io/github/stars/KiritoNya/gonhentai.svg?style=for-the-badge
+[stars-url]: https://github.com/KiritoNya/gonhentai/stargazers
+[issues-shield]: https://img.shields.io/github/issues/KiritoNya/gonhentai.svg?style=for-the-badge
+[issues-url]: https://github.com/KiritoNya/gonhentai/issues
+[license-shield]: https://img.shields.io/github/license/KiritoNya/gonhentai.svg?style=for-the-badge
+[license-url]: https://github.com/KiritoNya/gonhentai/blob/master/LICENSE.txt
