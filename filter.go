@@ -1,4 +1,4 @@
-package gonhnetai
+package gonhentai
 
 // Filter is the data struct that describes a filter
 type Filter struct {

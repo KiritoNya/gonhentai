@@ -1,4 +1,4 @@
-package gonhnetai
+package gonhentai
 
 import "golang.org/x/net/html"
 

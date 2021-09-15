@@ -1,5 +1,7 @@
 package gonhentai_test
 
+import "github.com/KiritoNya/gonhentai"
+
 // Test input const
 const (
 	numPage               int    = 36

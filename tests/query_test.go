@@ -20,7 +20,7 @@ func TestRecentDoujinshi(t *testing.T) {
 	}
 
 	// Marshal data
-	data, err := gonhentai.MarshalIndent(dc, " ", "\t")
+	data, err := json.MarshalIndent(dc, " ", "\t")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestRecentDoujinshi(t *testing.T) {
 
 func TestSearch(t *testing.T) {
 	// Call function
-	dc, err := gonhentai.Search(InputTests.SearchQuery, nhentai.QueryOptions{Page: "all"})
+	dc, err := gonhentai.Search(InputTests.SearchQuery, gonhentai.QueryOptions{Page: "all"})
 	if err != nil {
 		t.Fatal(err)
 	}
