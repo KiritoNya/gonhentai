@@ -1,4 +1,4 @@
-package nhentai
+package gonhnetai
 
 // TagsType is the data struct that describes the type of tag
 type TagsType string

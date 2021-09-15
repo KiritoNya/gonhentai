@@ -1,6 +1,4 @@
-package nhentai_test
-
-import "github.com/KiritoNya/nhentai"
+package gonhentai_test
 
 // Test input const
 const (
@@ -20,32 +18,32 @@ const (
 var InputTests = struct {
 	SearchQuery string
 	SearchTag   int
-	QueryFilter nhentai.QueryFilter
-	QueryOption nhentai.QueryOptions
+	QueryFilter gonhentai.QueryFilter
+	QueryOption gonhentai.QueryOptions
 }{
 	SearchQuery: "Blend s",
 	SearchTag:   29859,
-	QueryFilter: nhentai.QueryFilter{
-		ToDelete: []nhentai.Filter{
+	QueryFilter: gonhentai.QueryFilter{
+		ToDelete: []gonhentai.Filter{
 			{
 				Id:   0,
 				Name: "yaoi",
-				Type: nhentai.Tag,
+				Type: gonhentai.Tag,
 			},
 		},
-		ToFilter: []nhentai.Filter{
+		ToFilter: []gonhentai.Filter{
 			{
 				Id:   0,
 				Name: "maika sakuranomiya",
-				Type: nhentai.Character,
+				Type: gonhentai.Character,
 			},
 		},
 	},
-	QueryOption: nhentai.QueryOptions{Page: "1"},
+	QueryOption: gonhentai.QueryOptions{Page: "1"},
 }
 
 var OutputTest = struct {
 	SearchCustom int
 }{
-	SearchCustom: 22,
+	SearchCustom: 20,
 }

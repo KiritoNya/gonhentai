@@ -1,9 +1,9 @@
-package nhentai_test
+package gonhentai_test
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/KiritoNya/nhentai"
+	"github.com/KiritoNya/gonhentai"
 	"github.com/hexops/gotextdiff"
 	"github.com/hexops/gotextdiff/myers"
 	"github.com/hexops/gotextdiff/span"
@@ -14,13 +14,13 @@ import (
 func TestRecentDoujinshi(t *testing.T) {
 
 	// Call function
-	dc, err := nhentai.RecentDoujinshi(InputTests.QueryOption)
+	dc, err := gonhentai.RecentDoujinshi(InputTests.QueryOption)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Marshal data
-	data, err := json.MarshalIndent(dc, " ", "\t")
+	data, err := gonhentai.MarshalIndent(dc, " ", "\t")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestRecentDoujinshi(t *testing.T) {
 
 func TestSearch(t *testing.T) {
 	// Call function
-	dc, err := nhentai.Search(InputTests.SearchQuery, nhentai.QueryOptions{Page: "all"})
+	dc, err := gonhentai.Search(InputTests.SearchQuery, nhentai.QueryOptions{Page: "all"})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -65,7 +65,7 @@ func TestSearch(t *testing.T) {
 
 func TestSearchTag(t *testing.T) {
 	// Call function
-	_, err := nhentai.SearchTag(InputTests.SearchTag, InputTests.QueryOption)
+	_, err := gonhentai.SearchTag(InputTests.SearchTag, InputTests.QueryOption)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -74,7 +74,7 @@ func TestSearchTag(t *testing.T) {
 }
 
 func TestSearchCustom(t *testing.T) {
-	qr, err := nhentai.SearchCustom(InputTests.SearchQuery, InputTests.QueryFilter)
+	qr, err := gonhentai.SearchCustom(InputTests.SearchQuery, InputTests.QueryFilter)
 	if err != nil {
 		t.Fatal(err)
 	}

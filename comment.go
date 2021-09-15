@@ -1,4 +1,4 @@
-package nhentai
+package gonhnetai
 
 import (
 	"encoding/json"

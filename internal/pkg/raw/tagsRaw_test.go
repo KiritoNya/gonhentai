@@ -2,7 +2,7 @@ package raw_test
 
 import (
 	"encoding/json"
-	"github.com/KiritoNya/nhentai/internal/pkg/raw"
+	"github.com/KiritoNya/gonhentai/internal/pkg/raw"
 	"testing"
 )
 

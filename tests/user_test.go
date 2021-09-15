@@ -1,1 +1,1 @@
-package nhentai_test
+package gonhentai_test

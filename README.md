@@ -5,14 +5,14 @@
 [![MIT License][license-shield]][license-url]
 
 [![GoDoc](https://godoc.org/github.com/KiritoNya/gonhentai?status.svg)](https://pkg.go.dev/github.com/KiritoNya/gonhentai)
-[![Go Report Card](https://goreportcard.com/badge/github.com/KiritoNya/gonhentai)](https://goreportcard.com/report/github.com/KiritoNya/nhentai)
-[![Sourcegraph](https://sourcegraph.com/github.com/KiritoNya/gonhentai/-/badge.svg)](https://sourcegraph.com/github.com/KiritoNya/nhentai?badge)
+[![Go Report Card](https://goreportcard.com/badge/github.com/KiritoNya/gonhentai)](https://goreportcard.com/report/github.com/KiritoNya/gonhentai)
+[![Sourcegraph](https://sourcegraph.com/github.com/KiritoNya/gonhentai/-/badge.svg)](https://sourcegraph.com/github.com/KiritoNya/gonhentai?badge)
 
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/KiritoNya/nhentai">
+  <a href="https://github.com/KiritoNya/gonhentai">
     <img src="https://files.catbox.moe/dwzbu6.png" alt="Logo" width="500" height="250">
   </a>
   <h3 align="center">GOnhentai</h3>
@@ -20,14 +20,14 @@
   <p align="center">
     A simple GoLang library for nHentai
     <br />
-    <a href="https://pkg.go.dev/github.com/KiritoNya/nhentai"><strong>Explore the docs »</strong></a>
+    <a href="https://pkg.go.dev/github.com/KiritoNya/gonhentai"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/github_username/repo_name">View Demo</a>
     ·
-    <a href="https://github.com/KiritoNya/nhentai/issues">Report Bug</a>
+    <a href="https://github.com/KiritoNya/gonhentai/issues">Report Bug</a>
     ·
-    <a href="https://github.com/KiritoNya/nhentai/issues">Request Feature</a>
+    <a href="https://github.com/KiritoNya/gonhentai/issues">Request Feature</a>
   </p>
 
 
@@ -70,12 +70,12 @@ To download and start using the library follow these simple:
 
 ### Prerequisites
 
-* [go](https://pkg.go.dev/github.com/KiritoNya/nhentai) >=1.16
+* [go](https://golang.org/) >=1.16
 
 ### Installation
 
    ```sh
-   go get github.com/KiritoNya/nhentai
+   go get github.com/KiritoNya/gonhentai
    ```
 
 ---
@@ -87,7 +87,7 @@ Let's now see how the library is used with some small examples of common use.
 
 ```go
 // Create Doujinshi object and get some information
-doujin, err := nhentai.NewDoujinshiId(354862)
+doujin, err := gonhentai.NewDoujinshiId(354862)
 if err != nil {
 	panic(err)
 }
@@ -99,7 +99,7 @@ fmt.Println("Doujinshi:", doujin)
 
 ```go
 // Create Object
-doujin, err := nhentai.NewDoujinshiId(354862)
+doujin, err := gonhentai.NewDoujinshiId(354862)
 if err != nil {
 panic(err)
 }
@@ -125,7 +125,7 @@ fmt.Println("DATA:", page.Data)
 
 ```go
 // Create Doujinshi object and get some information
-doujin, err := nhentai.NewDoujinshiId(354862)
+doujin, err := gonhentai.NewDoujinshiId(354862)
 if err != nil {
 	panic(err)
 }
@@ -145,7 +145,7 @@ The library already provides you a method to download the image and save it on y
 Set the ```UseProgressBar``` variable to true if you decide to use the progress bar. Set ```ProgressBarTemplate``` variable If you want to use your progress bar defined by [pb](https://github.com/cheggaaa/pb) template.
 ```go
 // Create Doujinshi object
-doujin, err := nhentai.NewDoujinshiId(354862)
+doujin, err := gonhentai.NewDoujinshiId(354862)
 if err != nil {
 	panic(err)
 }
@@ -160,10 +160,10 @@ if err != nil {
 
 // Default is false
 // Set it to true if you want a progress bar
-nhentai.UseProgressBar = true
+gonhentai.UseProgressBar = true
 
 // Use this code for set your progress bar template.
-// nhentai.ProgressBarTemplate = `{{ red "With funcs:" }} {{ bar . "<" "-" (cycle . "↖" "↗" "↘" "↙" ) "." ">"}} {{speed . | rndcolor }} {{percent .}} {{string . "my_green_string" | green}} {{string . "my_blue_string" | blue}}`
+// gonhentai.ProgressBarTemplate = `{{ red "With funcs:" }} {{ bar . "<" "-" (cycle . "↖" "↗" "↘" "↙" ) "." ">"}} {{speed . | rndcolor }} {{percent .}} {{string . "my_green_string" | green}} {{string . "my_blue_string" | blue}}`
 
 // Download image
 err := page.Save("./img.jpg", 0644)
@@ -182,13 +182,13 @@ EX: ````/home/<username>/{{.Doujinshi.Id}} - {{.Doujinshi.Title.Pretty}}/{{.Page
 
 ```go
 // Create Doujinshi object
-doujin, err := nhentai.NewDoujinshiId(354862)
+doujin, err := gonhentai.NewDoujinshiId(354862)
 if err != nil {
 panic(err)
 }
 
 // You can use also
-pathTemplate := nhentai.DefaultDoujinNameTemplate + "/" + nehentai.DefaultPageNameTemplate
+pathTemplate := gonhentai.DefaultDoujinNameTemplate + "/" + nehentai.DefaultPageNameTemplate
 
 // Save doujinshi
 err = d.Save("/home/<username/" + pathTemplate, 0644)
@@ -199,7 +199,7 @@ t.Fatal(err)
 fmt.Println("Doujinshi saved!")
 ```
 
-## Search
+### Search
 
 ```go
 // Simple search
@@ -245,10 +245,16 @@ For more examples, please refer to the [Documentation](https://example.com)
 
 ---
 
-<!-- ROADMAP -->
-## Roadmap
+<!-- TODO -->
+## TODO
 
-See the [open issues](https://github.com/KiritoNya/nhentai/issues) for a list of proposed features (and known issues).
+- [ ] Random sauce
+- [ ] User Info
+- [ ] Authenticate
+- [ ] Favourites
+- [ ] Generate PDF
+- [ ] Generate CBR/CBZ
+- [ ] Tags list
 
 
 

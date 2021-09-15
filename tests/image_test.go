@@ -1,13 +1,12 @@
-package nhentai_test
+package gonhentai_test
 
 import (
-	"github.com/KiritoNya/nhentai"
 	"log"
 	"testing"
 )
 
 func TestPageImage_GetUrl(t *testing.T) {
-	var p nhentai.Page
+	var p gonhentai.Page
 
 	p.Ext = "jpg"
 	err := p.GetUrl(mediaId, numPage)
@@ -20,7 +19,7 @@ func TestPageImage_GetUrl(t *testing.T) {
 }
 
 func TestCover_GetUrl(t *testing.T) {
-	var c nhentai.Cover
+	var c gonhentai.Cover
 	c.Ext = "jpg"
 
 	err := c.GetUrl(mediaId)
@@ -33,7 +32,7 @@ func TestCover_GetUrl(t *testing.T) {
 }
 
 func TestThumbnail_GetUrl(t *testing.T) {
-	var thumb nhentai.Thumbnail
+	var thumb gonhentai.Thumbnail
 	thumb.Ext = "jpg"
 
 	err := thumb.GetUrl(mediaId, numPage)
@@ -46,7 +45,7 @@ func TestThumbnail_GetUrl(t *testing.T) {
 }
 
 func TestImage_GetSize(t *testing.T) {
-	var p nhentai.Page
+	var p gonhentai.Page
 	p.Url = pageUrl
 
 	err := p.GetSize()
@@ -59,11 +58,11 @@ func TestImage_GetSize(t *testing.T) {
 }
 
 func TestImage_GetData(t *testing.T) {
-	var p nhentai.Page
+	var p gonhentai.Page
 	p.Url = pageUrl
 	p.Ext = ".jpg"
 
-	nhentai.UseProgressBar = true
+	gonhentai.UseProgressBar = true
 
 	err := p.GetData()
 	if err != nil {
@@ -78,7 +77,7 @@ func TestImage_GetData(t *testing.T) {
 }
 
 func TestImage_GenerateName(t *testing.T) {
-	var p nhentai.Page
+	var p gonhentai.Page
 	p.Ext = "jpg"
 
 	err := p.GenerateName("image", "")
@@ -91,11 +90,11 @@ func TestImage_GenerateName(t *testing.T) {
 }
 
 func TestImage_Save(t *testing.T) {
-	var p1 nhentai.Page
+	var p1 gonhentai.Page
 	p1.Url = pageUrl
 	p1.Ext = ".jpg"
 
-	nhentai.UseProgressBar = true
+	gonhentai.UseProgressBar = true
 
 	err := p1.Save("./img.jpg", 0644)
 	if err != nil {

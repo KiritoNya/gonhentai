@@ -1,15 +1,15 @@
-package nhentai_test
+package gonhentai_test
 
 import (
 	"encoding/json"
-	"github.com/KiritoNya/nhentai"
+	"github.com/KiritoNya/gonhentai"
 	"os"
 	"strconv"
 	"testing"
 )
 
 func TestNewDoujinshiId(t *testing.T) {
-	doujin, err := nhentai.NewDoujinshiId(doujinshiId)
+	doujin, err := gonhentai.NewDoujinshiId(doujinshiId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,9 +20,9 @@ func TestNewDoujinshiId(t *testing.T) {
 
 func TestNewDoujinshiUrl(t *testing.T) {
 
-	doujinUrl := nhentai.DoujinBaseUrl + strconv.Itoa(doujinshiId)
+	doujinUrl := gonhentai.DoujinBaseUrl + strconv.Itoa(doujinshiId)
 
-	doujin, err := nhentai.NewDoujinshiUrl(doujinUrl)
+	doujin, err := gonhentai.NewDoujinshiUrl(doujinUrl)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,7 +32,7 @@ func TestNewDoujinshiUrl(t *testing.T) {
 }
 
 func TestDoujinshi_GetUrl(t *testing.T) {
-	var d nhentai.Doujinshi
+	var d gonhentai.Doujinshi
 	d.Id = doujinshiId
 
 	err := d.GetUrl()
@@ -47,7 +47,7 @@ func TestDoujinshi_GetUrl(t *testing.T) {
 func TestDoujinshi_GetRelated(t *testing.T) {
 
 	// Make doujinshi object
-	d, err := nhentai.NewDoujinshiId(doujinshiId)
+	d, err := gonhentai.NewDoujinshiId(doujinshiId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +64,7 @@ func TestDoujinshi_GetRelated(t *testing.T) {
 
 func TestDoujinshi_GetComments(t *testing.T) {
 	// Make doujinshi object
-	d, err := nhentai.NewDoujinshiId(doujinshiId)
+	d, err := gonhentai.NewDoujinshiId(doujinshiId)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -81,7 +81,7 @@ func TestDoujinshi_GetComments(t *testing.T) {
 
 func TestDoujinshi_Save(t *testing.T) {
 	// Make doujinshi object
-	d, err := nhentai.NewDoujinshiId(370060)
+	d, err := gonhentai.NewDoujinshiId(370060)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -96,7 +96,7 @@ func TestDoujinshi_Save(t *testing.T) {
 }
 
 func TestDoujinshi_UnmarshalJSON(t *testing.T) {
-	var d nhentai.Doujinshi
+	var d gonhentai.Doujinshi
 
 	content, err := os.ReadFile("./doujinshi.test.json")
 	if err != nil {

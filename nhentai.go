@@ -1,6 +1,7 @@
-package nhentai
+package gonhnetai
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -49,6 +50,9 @@ const (
 
 	// commentsApi is the endpoint for get the comments linked to a doujinshi
 	commentsApi string = "/gallery/{{.id}}/comments"
+
+	// randomUrl is the endpoint for generate random doujinshi
+	randomUrl string = "/random"
 )
 
 // ClientHttp is the client used for http requests. The default value is http.DefaultClient.
@@ -63,4 +67,17 @@ var UseProgressBar bool
 func init() {
 	ClientHttp = http.DefaultClient
 	ProgressBarTemplate = defaultProgressBarTemplate
+}
+
+// RandomDoujin is a function that generate a random doujinshi
+func RandomDoujin() (doujin *Doujinshi, err error) {
+
+	// Get Request
+	resp, err := ClientHttp.Head(BaseUrl + randomUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(resp)
+	return
 }
