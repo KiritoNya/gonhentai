@@ -37,9 +37,6 @@ type Doujinshi struct {
 	raw          json.RawMessage
 }
 
-// DoujinshiCollection is the data struct that describes a collection of doujinshi
-type DoujinshiCollection []*Doujinshi
-
 // Title is the data struct that describes the doujinshi title
 type Title struct {
 	English  string
@@ -452,20 +449,3 @@ func (d *Doujinshi) extractTags() []*TagInfo {
 	tags = append(tags, d.Languages...)
 	return tags
 }
-
-/*
-=====================================
-	DOUJIN COLLECTION METHODS
-=====================================
-*/
-
-/*
-func (dc *DoujinshiCollection) Filter(filters Filters) {
-	deletedCount := 0
-	for _, doujin := range dc {
-		for _, tag := range doujin.Tags {
-			tag.
-		}
-	}
-}
-*/

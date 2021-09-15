@@ -10,6 +10,7 @@ import (
 	"strings"
 )
 
+// Sort is the data struct that describes sort method
 type Sort string
 
 const (
@@ -32,6 +33,7 @@ type QueryResult struct {
 	PerPage  int          `json:"per_page"`
 }
 
+// QueryFilter is a type for the result of a Query
 type QueryFilter struct {
 	ToDelete []Filter
 	ToFilter []Filter
@@ -226,5 +228,3 @@ func searchAll(query string, opt QueryOptions) (qr QueryResult, err error) {
 
 	return queryPag1, nil
 }
-
-//slice = append(slice[:i], slice[i+1:]...)

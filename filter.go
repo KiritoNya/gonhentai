@@ -1,5 +1,6 @@
 package nhentai
 
+// Filter is the data struct that describes a filter
 type Filter struct {
 	Id   int
 	Name string

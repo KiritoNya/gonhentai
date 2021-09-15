@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// imageType is the type of image
 type imageType int
 
 const (
@@ -20,6 +21,7 @@ const (
 	page
 )
 
+// image is the data struct that describes a image
 type image struct {
 	Name   string `json:",omitempty"`
 	Url    string `json:",omitempty"`
