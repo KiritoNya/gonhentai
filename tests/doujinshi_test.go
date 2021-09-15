@@ -9,6 +9,7 @@ import (
 )
 
 func TestNewDoujinshiId(t *testing.T) {
+	// Create doujin
 	doujin, err := gonhentai.NewDoujinshiId(doujinshiId)
 	if err != nil {
 		t.Fatal(err)
