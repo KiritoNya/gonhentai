@@ -3,7 +3,7 @@ package nhentai
 import (
 	"encoding/json"
 	"errors"
-	"github.com/KiritoNya/nhentai/internal/pkg/raw"
+	"github.com/KiritoNya/gonhentai/internal/pkg/raw"
 	"io"
 	"io/ioutil"
 	"os"
