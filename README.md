@@ -4,7 +4,7 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 
-[![GoDoc](https://pkg.go.dev/github.com/KiritoNya/gonhentai)
+[![GoDoc](https://pkg.go.dev/github.com/KiritoNya/gonhentai)]
 [![Go Report Card](https://goreportcard.com/badge/github.com/KiritoNya/gonhentai)](https://goreportcard.com/report/github.com/KiritoNya/nhentai)
 [![Sourcegraph](https://sourcegraph.com/github.com/KiritoNya/gonhentai/-/badge.svg)](https://sourcegraph.com/github.com/KiritoNya/nhentai?badge)
 
