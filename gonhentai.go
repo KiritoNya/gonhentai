@@ -1,7 +1,6 @@
 package gonhentai
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -69,15 +68,31 @@ func init() {
 	ProgressBarTemplate = defaultProgressBarTemplate
 }
 
-// RandomDoujin is a function that generate a random doujinshi
-func RandomDoujin() (doujin *Doujinshi, err error) {
+// RandomDoujinshi is a function that generate a random doujinshi
+func RandomDoujinshi() (doujin *Doujinshi, err error) {
+
+	var urlGen string
+
+	// Check redirect
+	ClientHttp.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		if req.URL.String() != BaseUrl+randomUrl+"/" {
+			urlGen = req.URL.String()
+		}
+		return nil
+	}
 
 	// Get Request
 	resp, err := ClientHttp.Head(BaseUrl + randomUrl)
 	if err != nil {
 		return nil, err
 	}
+	defer resp.Body.Close()
 
-	fmt.Println(resp)
-	return
+	// Create object doujinshi
+	doujin, err = NewDoujinshiUrl(urlGen)
+	if err != nil {
+		return nil, err
+	}
+
+	return doujin, err
 }
