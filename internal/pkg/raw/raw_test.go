@@ -230,7 +230,7 @@ func checkResult(expected string, obtained map[string]json.RawMessage) (result b
 		return false, "", err
 	}
 
-	// Check lenght
+	// Check length
 	if len(testMap) != len(testMap2) {
 		return false, fmt.Sprintf("\nExpected: '%d' attributes\nObtained: '%d' attributes", len(testMap), len(testMap2)), nil
 	}

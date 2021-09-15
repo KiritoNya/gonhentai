@@ -2,6 +2,7 @@ package raw
 
 import "encoding/json"
 
+// ImageRaw is the data struct that describes a image raw
 type ImageRaw struct {
 	Data map[string]json.RawMessage
 }

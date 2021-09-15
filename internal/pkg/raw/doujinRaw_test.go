@@ -67,7 +67,7 @@ func TestDoujinRaw_Title(t *testing.T) {
 	titlesMap["Japanese"] = titleJapanese
 	titlesMap["Pretty"] = titlePretty
 
-	// Check map lenght
+	// Check map length
 	if len(titlesMap) != len(OutputTest.Doujin.Titles) {
 		t.Fatalf("\nExpected: '%d %s'\nObtained: '%d %s'", len(OutputTest.Doujin.Titles), "title", len(titlesMap), "title")
 	}

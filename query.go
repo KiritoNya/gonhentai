@@ -14,10 +14,17 @@ import (
 type Sort string
 
 const (
-	Recent          = ""
-	PopularAllTime  = "popular"
+	// Recent order
+	Recent = ""
+
+	// PopularAllTime order
+	PopularAllTime = "popular"
+
+	// PopularThisWeek order
 	PopularThisWeek = "popular-week"
-	PopularToday    = "popular-today"
+
+	// PopularToday order
+	PopularToday = "popular-today"
 )
 
 // QueryOptions is a type for the option of a query

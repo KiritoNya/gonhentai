@@ -15,6 +15,7 @@ type DoujinRaw struct {
 	tags []*TagRaw
 }
 
+// User is the data struct that describes a user raw
 type User struct {
 	Id   int `validate:"-"`
 	Info struct {
