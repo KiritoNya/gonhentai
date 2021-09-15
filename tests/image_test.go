@@ -3,6 +3,7 @@ package gonhentai_test
 import (
 	"log"
 	"testing"
+	"github.com/KiritoNya/gonhentai"
 )
 
 func TestPageImage_GetUrl(t *testing.T) {
