@@ -18,11 +18,13 @@ const (
 )
 
 var InputTests = struct {
+	UserUrl     string
 	SearchQuery string
 	SearchTag   int
 	QueryFilter gonhentai.QueryFilter
 	QueryOption gonhentai.QueryOptions
 }{
+	UserUrl:     "https://nhentai.net/users/2438576/lomeno",
 	SearchQuery: "Blend s",
 	SearchTag:   29859,
 	QueryFilter: gonhentai.QueryFilter{
@@ -45,7 +47,16 @@ var InputTests = struct {
 }
 
 var OutputTest = struct {
+	User         gonhentai.User
 	SearchCustom int
 }{
+	User: gonhentai.User{
+		Id:           2438576,
+		Username:     "",
+		Url:          "",
+		ProfileImage: &gonhentai.Avatar{},
+		IsSuperUser:  false,
+		IsStaff:      false,
+	},
 	SearchCustom: 20,
 }
