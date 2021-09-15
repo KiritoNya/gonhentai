@@ -1,9 +1,6 @@
 package gonhentai_test
 
-import (
-	"github.com/KiritoNya/gonhentai"
-	"testing"
-)
+import "github.com/KiritoNya/gonhentai"
 
 // Test input const
 const (
@@ -51,13 +48,4 @@ var OutputTest = struct {
 	SearchCustom int
 }{
 	SearchCustom: 20,
-}
-
-func TestRandomDoujinshi(t *testing.T) {
-	d, err := gonhentai.RandomDoujinshi()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	t.Log(d)
 }

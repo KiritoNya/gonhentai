@@ -248,7 +248,7 @@ For more examples, please refer to the [Documentation](https://example.com)
 <!-- TODO -->
 ## TODO
 
-- [X] Random sauce
+- [ ] Random sauce
 - [ ] User Info
 - [ ] Authenticate
 - [ ] Favourites

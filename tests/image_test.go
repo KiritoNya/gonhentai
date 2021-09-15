@@ -1,7 +1,6 @@
 package gonhentai_test
 
 import (
-	"github.com/KiritoNya/gonhentai"
 	"log"
 	"testing"
 )
