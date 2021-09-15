@@ -24,7 +24,7 @@ var InputTests = struct {
 	QueryOption nhentai.QueryOptions
 }{
 	SearchQuery: "Blend s",
-	SearchTag:   0,
+	SearchTag:   29859,
 	QueryFilter: nhentai.QueryFilter{
 		ToDelete: []nhentai.Filter{
 			{

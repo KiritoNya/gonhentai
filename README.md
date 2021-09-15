@@ -199,6 +199,48 @@ t.Fatal(err)
 fmt.Println("Doujinshi saved!")
 ```
 
+## Search
+
+```go
+// Simple search
+qr, err := nhentai.Search("Blend s", nhentai.QueryOptions{Page: "1"})
+if err != nil {
+	panic(err)
+}
+fmt.Println(qr)
+
+// Tagged search
+qr, err = nhentai.SearchTag(29859, nhentai.QueryOptions{Page: "1"})
+if err != nil {
+    panic(err)
+}
+fmt.Println(qr)
+
+// Custom search
+qr, err := nhentai.SearchCustom("Blend s", nhentai.QueryFilter {
+    ToDelete: []nhentai.Filter{
+        {
+            Id:   0,
+            Name: "yaoi",
+            Type: nhentai.Tag,
+        },
+	},
+    ToFilter: []nhentai.Filter{
+        {
+            Id:   0,
+            Name: "maika sakuranomiya",
+            Type: nhentai.Character,
+        },
+    },
+})
+
+// Check error
+if err != nil {
+    panic(err)
+}
+fmt.Println(qr)
+```
+
 For more examples, please refer to the [Documentation](https://example.com)
 
 ---
